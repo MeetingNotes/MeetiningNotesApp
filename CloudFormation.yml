@@ -20,6 +20,7 @@ Parameters:
   GitHubRepository:
     Description: GitHub repository URL where the Node.js backend and React frontend code reside
     Type: String
+    Default: 'https://github.com/MeetingNotes/MeetiningNotesApp'
   AllowedIP:
     Description: The IP address range that can access RDS and EC2 instances
     Type: String
