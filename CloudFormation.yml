@@ -141,7 +141,7 @@ Resources:
     Type: AWS::RDS::DBInstance
     DeletionPolicy: Snapshot
     Properties:
-      PubliclyAccessible: false
+      PubliclyAccessible: true
       AllocatedStorage: 20
       DBInstanceClass: db.t3.micro
       Engine: sqlserver-se
