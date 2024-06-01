@@ -171,7 +171,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:container:nodejs
           OptionName: NodeCommand
           Value: "npm start"
-      SolutionStackName: 64bit Amazon Linux 2 v3.4.7 running Node.js 14
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
 
   MeetingNotesAppFrontend:
     Type: AWS::ElasticBeanstalk::Application
@@ -191,7 +191,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:container:nodejs
           OptionName: NodeCommand
           Value: "npm start"
-      SolutionStackName: 64bit Amazon Linux 2 v3.4.7 running Node.js 14
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
 
   MeetingNotesAppS3Bucket:
     Type: AWS::S3::Bucket
