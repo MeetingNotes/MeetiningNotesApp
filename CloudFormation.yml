@@ -17,11 +17,8 @@ Parameters:
     Description: Master user password for the RDS instance
     Type: String
     NoEcho: true
-  NodeGitHubRepository:
-    Description: GitHub repository URL where the Node.js backend code resides
-    Type: String
-  ReactGitHubRepository:
-    Description: GitHub repository URL where the React frontend code resides
+  GitHubRepository:
+    Description: GitHub repository URL where the Node.js backend and React frontend code reside
     Type: String
   AllowedIP:
     Description: The IP address range that can access RDS and EC2 instances
@@ -169,7 +166,10 @@ Resources:
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
-          Value: !Ref NodeGitHubRepository
+          Value: !Ref GitHubRepository
+        - Namespace: aws:elasticbeanstalk:container:nodejs
+          OptionName: NodeCommand
+          Value: "npm start"
       SolutionStackName: 64bit Amazon Linux 2 v3.4.7 running Node.js 14
 
   MeetingNotesAppFrontend:
@@ -186,7 +186,10 @@ Resources:
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
-          Value: !Ref ReactGitHubRepository
+          Value: !Ref GitHubRepository
+        - Namespace: aws:elasticbeanstalk:container:nodejs
+          OptionName: NodeCommand
+          Value: "npm start"
       SolutionStackName: 64bit Amazon Linux 2 v3.4.7 running Node.js 14
 
   MeetingNotesAppS3Bucket:
