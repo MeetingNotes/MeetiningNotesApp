@@ -30,6 +30,6 @@ jobs:
               KeyName="meetingnotesapp-keypair" \
               DBMasterUsername="${{ secrets.DB_MASTER_USERNAME }}" \
               DBMasterUserPassword="${{ secrets.DB_MASTER_USER_PASSWORD }}" \
-              GitHubRepository="https://github.com/MeetingNotes/MeetiningNotesApp" \
+              GitHubRepository="https://github.com/MeetingNotes/MeetiningNotesApp.git" \
               AllowedIP="0.0.0.0/0" \
             --capabilities CAPABILITY_IAM
