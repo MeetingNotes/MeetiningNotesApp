@@ -3,7 +3,7 @@ name: Deploy CloudFormation Stack
 on:
   push:
     branches:
-      - McQuile/InfrastructureDeployment
+      - main
   workflow_dispatch:
 
 jobs:
@@ -30,7 +30,6 @@ jobs:
               KeyName="meetingnotesapp-keypair" \
               DBMasterUsername="${{ secrets.DB_MASTER_USERNAME }}" \
               DBMasterUserPassword="${{ secrets.DB_MASTER_USER_PASSWORD }}" \
-              NodeGitHubRepository="https://github.com/your-repo/node-backend" \
-              ReactGitHubRepository="https://github.com/your-repo/react-frontend" \
+              GitHubRepository="https://github.com/MeetingNotes/MeetiningNotesApp" \
               AllowedIP="0.0.0.0/0" \
             --capabilities CAPABILITY_IAM
