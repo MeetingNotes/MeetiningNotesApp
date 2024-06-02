@@ -192,6 +192,7 @@ Resources:
           OptionName: AssociatePublicIpAddress
           Value: true
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+      ApplicationVersion: "v1.0.0"
       
   ConfigurationTemplate2:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
@@ -223,7 +224,8 @@ Resources:
         - Namespace: aws:ec2:vpc
           OptionName: AssociatePublicIpAddress
           Value: true
-      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20 
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+      ApplicationVersion: "v1.0.0"
       
   MyDBInstance:
     Type: AWS::RDS::DBInstance
