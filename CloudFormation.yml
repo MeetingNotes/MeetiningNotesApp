@@ -192,7 +192,6 @@ Resources:
           OptionName: AssociatePublicIpAddress
           Value: true
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
-      ApplicationVersion: "v1.0.0"
       
   ConfigurationTemplate2:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
@@ -225,7 +224,6 @@ Resources:
           OptionName: AssociatePublicIpAddress
           Value: true
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
-      ApplicationVersion: "v1.0.0"
       
   MyDBInstance:
     Type: AWS::RDS::DBInstance
@@ -259,6 +257,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
+      VersionLabel: "v1.0.0"
 
   MeetingNotesAppFrontend:
     Type: AWS::ElasticBeanstalk::Application
@@ -276,6 +275,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
+      VersionLabel: "v1.0.0"
 
   MeetingNotesAppS3Bucket:
     Type: AWS::S3::Bucket
