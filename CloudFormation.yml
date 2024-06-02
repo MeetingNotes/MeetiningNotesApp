@@ -252,7 +252,7 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppAPI
       Description: ElasticBeanstalk Environment for Node.js Backend
       EnvironmentName: !Sub ${AWS::StackName}-api
-      TemplateName: !Ref ConfigurationTemplate
+      TemplateName: !Ref ConfigurationTemplate1
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
@@ -269,7 +269,7 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppFrontend
       Description: ElasticBeanstalk Environment for React Frontend
       EnvironmentName: !Sub ${AWS::StackName}-frontend
-      TemplateName: !Ref ConfigurationTemplate
+      TemplateName: !Ref ConfigurationTemplate2
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
