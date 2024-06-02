@@ -178,7 +178,7 @@ Resources:
           Value: SingleInstance 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: !Ref SpectacularDocumentationGeneratorInstanceProfile
+          Value: !Ref MeetingNotesAppInstanceProfile
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
           Value: !Ref MyVPC
@@ -225,15 +225,6 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
-        - Namespace: aws:elasticbeanstalk:environment:process:default
-          OptionName: HEALTHCHECK_PATH
-          Value: "/health"
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: ServiceRole
-          Value: !GetAtt MeetingNotesAppInstanceProfile.Arn
-        - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: IamInstanceProfile
-          Value: !Ref MeetingNotesAppInstanceRole
 
   MeetingNotesAppFrontend:
     Type: AWS::ElasticBeanstalk::Application
@@ -251,9 +242,6 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
-        - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: IamInstanceProfile
-          Value: !Ref MeetingNotesAppInstanceRole
 
   MeetingNotesAppS3Bucket:
     Type: AWS::S3::Bucket
