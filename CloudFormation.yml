@@ -161,6 +161,38 @@ Resources:
       Roles:
         - !Ref MeetingNotesAppInstanceRole
 
+  ConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppAPI
+      Description: Node.js Elastic Beanstalk Application Template
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance 
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref SpectacularDocumentationGeneratorInstanceProfile
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref MyVPC
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Ref PublicSubnet
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !Ref ElasticBeanstalkSecurityGroup
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: true
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+      
   MyDBInstance:
     Type: AWS::RDS::DBInstance
     DeletionPolicy: Delete
@@ -188,6 +220,7 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppAPI
       Description: ElasticBeanstalk Environment for Node.js Backend
       EnvironmentName: !Sub ${AWS::StackName}-api
+      TemplateName: !Ref ConfigurationTemplate
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
@@ -200,8 +233,7 @@ Resources:
           Value: !GetAtt MeetingNotesAppInstanceProfile.Arn
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: MeetingNotesAppInstanceProfile
-      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+          Value: !Ref MeetingNotesAppInstanceRole
 
   MeetingNotesAppFrontend:
     Type: AWS::ElasticBeanstalk::Application
@@ -214,14 +246,14 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppFrontend
       Description: ElasticBeanstalk Environment for React Frontend
       EnvironmentName: !Sub ${AWS::StackName}-frontend
+      TemplateName: !Ref ConfigurationTemplate
       OptionSettings:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: MeetingNotesAppInstanceProfile
-      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+          Value: !Ref MeetingNotesAppInstanceRole
 
   MeetingNotesAppS3Bucket:
     Type: AWS::S3::Bucket
