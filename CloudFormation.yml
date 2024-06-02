@@ -167,7 +167,7 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppAPI
       Description: MeetingNotesAppAPIApplicationVersion
       SourceBundle:
-        S3Bucket: !Ref MeetingNotesAppS3Bucket
+        S3Bucket: !Sub MeetingNotesAppS3Bucket
         S3Key: meeting-notes-app-api-v1
 
         
@@ -177,7 +177,7 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppFrontend
       Description: MeetingNotesAppFrontendApplicationVersion
       SourceBundle:
-        S3Bucket: !Ref MeetingNotesAppFrontendBucket
+        S3Bucket: !Sub MeetingNotesAppFrontendBucket
         S3Key: meeting-notes-app-frontend-v1
 
   ConfigurationTemplate1:
