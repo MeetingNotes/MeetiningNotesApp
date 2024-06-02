@@ -160,6 +160,25 @@ Resources:
     Properties:
       Roles:
         - !Ref MeetingNotesAppInstanceRole
+        
+  MeetingNotesAppAPIApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppAPI
+      Description: MeetingNotesAppAPIApplicationVersion
+      SourceBundle:
+        S3Bucket: !Ref MeetingNotesAppS3Bucket
+        S3Key: meeting-notes-app-api-v1
+
+        
+  MeetingNotesAppFrontendApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppFrontend
+      Description: MeetingNotesAppFrontendApplicationVersion
+      SourceBundle:
+        S3Bucket: !Ref MeetingNotesAppFrontendBucket
+        S3Key: meeting-notes-app-frontend-v1
 
   ConfigurationTemplate1:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
@@ -257,7 +276,6 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
-      VersionLabel: "v1.0.0"
 
   MeetingNotesAppFrontend:
     Type: AWS::ElasticBeanstalk::Application
@@ -275,14 +293,25 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
-      VersionLabel: "v1.0.0"
 
   MeetingNotesAppS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub meetingnotesapp-${AWS::AccountId}-${AWS::Region}
       AccessControl: Private
-
+      
+  MeetingNotesAppAPIBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub meetingnotesapp-api-${AWS::AccountId}-${AWS::Region}
+      AccessControl: Private
+      
+  MeetingNotesAppFrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub meetingnotesapp-frontend-${AWS::AccountId}-${AWS::Region}
+      AccessControl: Private
+      
 Outputs:
   APIEnvironmentDomain:
     Description: "Elastic Beanstalk Environment Domain for API"
