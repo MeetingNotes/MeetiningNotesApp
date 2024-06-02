@@ -215,7 +215,7 @@ Resources:
   ConfigurationTemplate2:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
     Properties:
-      ApplicationName: !Ref MeetingNotesAppAPI
+      ApplicationName: !Ref MeetingNotesAppFrontend
       Description: Node.js Elastic Beanstalk Application Template
       OptionSettings:
         - Namespace: aws:autoscaling:asg
