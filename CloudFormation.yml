@@ -167,8 +167,8 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppAPI
       Description: MeetingNotesAppAPIApplicationVersion
       SourceBundle:
-        S3Bucket: !Sub MeetingNotesAppAPIBucket
-        S3Key: !Sub nodejs.zip
+        S3Bucket: MeetingNotesAppAPIBucket
+        S3Key: nodejs.zip
 
         
   MeetingNotesAppFrontendApplicationVersion:
@@ -177,8 +177,8 @@ Resources:
       ApplicationName: !Ref MeetingNotesAppFrontend
       Description: MeetingNotesAppFrontendApplicationVersion
       SourceBundle:
-        S3Bucket: !Sub MeetingNotesAppFrontendBucket
-        S3Key: !Sub nodejs.zip
+        S3Bucket: MeetingNotesAppFrontendBucket
+        S3Key: nodejs.zip
 
   ConfigurationTemplate1:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
