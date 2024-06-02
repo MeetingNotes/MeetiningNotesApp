@@ -200,7 +200,7 @@ Resources:
           Value: !GetAtt MeetingNotesAppInstanceProfile.Arn
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: !Ref MeetingNotesAppInstanceProfile
+          Value: MeetingNotesAppInstanceProfile
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
 
   MeetingNotesAppFrontend:
@@ -220,7 +220,7 @@ Resources:
           Value: !Ref GitHubRepository
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: !Ref MeetingNotesAppInstanceProfile
+          Value: MeetingNotesAppInstanceProfile
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
 
   MeetingNotesAppS3Bucket:
