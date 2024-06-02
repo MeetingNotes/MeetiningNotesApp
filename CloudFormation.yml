@@ -41,7 +41,7 @@ Resources:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.1.0/24'
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 0
         - Fn::GetAZs: ''
 
@@ -51,7 +51,7 @@ Resources:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.2.0/24'
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 1
         - Fn::GetAZs: ''
 
@@ -60,7 +60,7 @@ Resources:
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.3.0/24'
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 0
         - Fn::GetAZs: ''
 
@@ -69,7 +69,7 @@ Resources:
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.4.0/24'
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 1
         - Fn::GetAZs: ''
 
@@ -90,7 +90,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 5432  # PostgreSQL default port
           ToPort: 5432
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref AllowedIP
 
   ElasticBeanstalkSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -146,7 +146,7 @@ Resources:
       DBInstanceClass: db.t3.micro
       Engine: postgres
       EngineVersion: 16.2
-      DBInstanceIdentifier: MyDBInstance
+      DBInstanceIdentifier: MeetingNotesAppDB
       MasterUsername: !Ref DBMasterUsername
       MasterUserPassword: !Ref DBMasterUserPassword
       DBSubnetGroupName: !Ref MyDBSubnetGroup
@@ -168,6 +168,12 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GITHUB_REPO_URL
           Value: !Ref GitHubRepository
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HEALTHCHECK_PATH
+          Value: "/health"
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: ServiceRole
+          Value: !GetAtt MeetingNotesAppInstanceProfile.Arn
       SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
 
   MeetingNotesAppFrontend:
