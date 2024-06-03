@@ -1,10 +1,10 @@
 .card {
     background-color: #f6f9fa;
-    width: 300px;
-    margin: 5px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 20rem;
+    margin: 0.313rem;
+    padding: 0.938rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
 .title {
@@ -19,17 +19,17 @@
 
 .tasks {
     list-style-type: disc;
-    padding-left: 20px;
+    padding-left: 1.25rem;
 }
 
 .expandButton {
     background-color: #003255;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 10px;
+    border-radius: 0.25rem;
+    padding: 0.625rem;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 0.625rem;
 }
 
 .modal {
@@ -40,11 +40,11 @@
     bottom: auto;
     transform: translate(-50%, -50%);
     background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
     width: 80%;
-    max-width: 500px;
+    max-width: 31.25rem;
     max-height: 80vh;
     overflow-y: auto;
 }
@@ -57,13 +57,13 @@
     background-color: #003255;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 10px;
+    border-radius: 0.25rem;
+    padding: 0.625rem;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 0.625rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 37.5rem) {
     
 
     .modal {

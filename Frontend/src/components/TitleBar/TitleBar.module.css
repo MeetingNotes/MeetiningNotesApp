@@ -34,7 +34,7 @@
     font-weight: bold;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
     .main {
         height: 10vh;
         font-size: 3rem;
@@ -47,7 +47,7 @@
 
 .side_nav {
     /* height: 100%; */
-    width: 250px;
+    width: 15.625rem;
     position: fixed;
     right: 0;
     top: 0;
@@ -55,13 +55,13 @@
     z-index: 1;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 60px;
+    padding-top: 3.75rem;
 }
 
 .side_nav a {
-    padding: 8px 8px 8px 32px;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 1.563rem;
     color: #818181;
     display: block;
     transition: 0.3s;
@@ -74,9 +74,9 @@
 .side_nav .closebtn {
     position: absolute;
     top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+    right: 1.563rem;
+    font-size: 2.25rem;
+    margin-left: 3.125rem;
 }
 
 .overlay {
@@ -96,19 +96,19 @@
     top: 0;
     right: 0;
     height: 100%;
-    width: 250px;
+    width: 15.625rem;
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+    padding: 1.25rem;
+    box-shadow: -0.125rem 0 0.313rem rgba(0,0,0,0.5);
 }
 
 .closeBtn {
     background: none;
     border: none;
     color: #003255;
-    font-size: 30px;
+    font-size: 1.875rem;
     align-self: flex-end;
     cursor: pointer;
 }
@@ -116,7 +116,7 @@
 .buttons {
     display: flex;
     flex-direction: column; /* If you want them to be stacked vertically */
-    gap: 10px; /* Adjust the gap value to the desired spacing */
+    gap: 0.625rem; /* Adjust the gap value to the desired spacing */
 }
 
 /* Optional: If you want horizontal spacing */

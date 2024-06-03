@@ -2,12 +2,14 @@ import styles from './DashBoard.module.css'
 import { UploadButton } from "../components/UploadButton/UploadButton";
 import { LogOutButton } from "../components/LogOutButton/LogOutButton";
 import { Card } from "../components/CardComponent/CardComponent";
-import { useState } from 'react';
-import { useIsMobile } from '../recoil';
+import { useEffect, useState } from 'react';
+import { useIsMobile, useWindowWidth } from '../recoil';
 import { useRecoilValue } from 'recoil';
+import React from 'react';
 
 export const DashBoard = () => {
     const isMobile = useRecoilValue(useIsMobile);
+    const windowWidth = useRecoilValue(useWindowWidth);
 
 
     const cardData = [
@@ -113,8 +115,22 @@ export const DashBoard = () => {
         }
     ];
     const [currentPage, setCurrentPage] = useState(0);
+    const [cardsPerPage, setCardsPerPage] = useState(isMobile ? 2 : 6);
+    // const cardsPerPage = isMobile ? 2 : 6;
+
+
+    useEffect(() => {
+        if (windowWidth <= 768) {
+            setCardsPerPage(2);
+        } else if (windowWidth <= 1200) {
+            setCardsPerPage(6);
+        } else if (windowWidth >= 2000){
+            setCardsPerPage(12);
+        }
+      }, [windowWidth,cardsPerPage])
+    ;
+    console.log(windowWidth);
     
-    const cardsPerPage = isMobile ? 2 : 6;
 
     const startIndex = currentPage * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
@@ -133,14 +149,14 @@ export const DashBoard = () => {
     };
 
     return (
-        <div className={styles.main}>
+        <main className={styles.main}>
             {!isMobile &&
-            <div className={styles.left}>
-                <UploadButton />
-                <LogOutButton />
-            </div>
-    }
-            <div className={styles.right}>
+                <section className={styles.left}>
+                    <UploadButton />
+                    <LogOutButton />
+                </section>
+            }
+            <section className={styles.right}>
                 <div className={styles.cardsContainer}>
                     {currentCards.map((card, index) => (
                         <Card
@@ -151,15 +167,15 @@ export const DashBoard = () => {
                         />
                     ))}
                 </div>
-                <div className={styles.pagination}>
+                <nav className={styles.pagination}>
                     <button onClick={handlePreviousPage} disabled={startIndex === 0}>
                         Previous
                     </button>
                     <button onClick={handleNextPage} disabled={endIndex >= cardData.length}>
                         Next
                     </button>
-                </div>
-            </div>
-        </div>
+                </nav>
+            </section>
+        </main>
     );
 };

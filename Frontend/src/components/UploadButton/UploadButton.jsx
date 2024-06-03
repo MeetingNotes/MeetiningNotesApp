@@ -17,22 +17,19 @@ export const UploadButton = () => {
             const fileExtension = fileName.split('.').pop();
     
             if (fileExtension === 'vtt') {
-              // Handle the VTT file
               console.log('File selected:', file);
-              // Perform further processing here, e.g., reading the file content
             } else {
               alert('Please select a VTT file.');
             }
           }
         });
     
-        // Simulate a click on the file input element to open the file picker
         fileInput.click();
       };
 
     return(
-        <div className={styles.addbutton} onClick={handleAdd}>
+        <button className={styles.addbutton} onClick={handleAdd}>
         Upload
-        </div>
+        </button>
     );
 };

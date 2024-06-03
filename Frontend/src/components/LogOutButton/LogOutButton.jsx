@@ -9,8 +9,8 @@ export const LogOutButton = () => {
       };
 
     return(
-        <div className={styles.addbutton} onClick={deletetoken}>
+        <button className={styles.addbutton} onClick={deletetoken}>
         LogOut 
-        </div>
+        </button>
     );
 };

@@ -10,7 +10,6 @@ export const TitleBar = () => {
     const [isSideNavOpen, setIsSideNavOpen] = useState(false);
     const isMobile = useRecoilValue(useIsMobile);
 
-
     const openNav = () => {
         setIsSideNavOpen(true);
         console.log("Open");
@@ -21,30 +20,29 @@ export const TitleBar = () => {
     };
 
     return (
-        <>
-            <nav>
-                <div className={styles.main}>
-                    <div className={styles.title}>
-                        <div className={styles.text_pink}>M</div>
-                        <div className={styles.text_white}>eeting</div>
-                        <div className={styles.text_pink}>T</div>
-                        <div className={styles.text_white}>asks</div>
-                    </div>
-                    { isMobile &&
-                        <img src={BurgerMenu} className="burgermenu" onClick={openNav} alt="Burger Menu" /> 
-                    }
-                </div>
-                {isSideNavOpen && (
-                    <div className={styles.sidenav}>
-                        <button className={styles.closeBtn} onClick={closeNav}>×</button>
-                        <div className={styles.buttons}>
+        <nav>
+            <header className={styles.main}>
+                <h1 className={styles.title}>
+                    <span className={styles.text_pink}>M</span>
+                    <span className={styles.text_white}>eeting</span>
+                    <span className={styles.text_pink}>T</span>
+                    <span className={styles.text_white}>asks</span>
+                </h1>
+                { isMobile &&
+                    <button className={styles.burgermenu} onClick={openNav} aria-label="Open Side Navigation">
+                        <img src={BurgerMenu} alt="Burger Menu" />
+                    </button>
+                }
+            </header>
+            {isSideNavOpen && (
+                <aside className={styles.sidenav}>
+                    <button className={styles.closeBtn} onClick={closeNav} aria-label="Close Side Navigation">×</button>
+                    <div className={styles.buttons}>
                         <UploadButton />
                         <LogOutButton />
-                        </div>
                     </div>
-                )}
-                
-            </nav>   
-        </>
+                </aside>
+            )}
+        </nav>
     );
 };

@@ -16,10 +16,12 @@ export const Card = ({ title, description, tasks }) => {
     };
 
     return (
-        <div>
-            <div className={styles.card}>
-                <h3 className={styles.title}>{title}</h3>
-                <p className={styles.description}>{description}</p>
+        <>
+            <article className={styles.card}>
+                <header>
+                    <h3 className={styles.title}>{title}</h3>
+                    <p className={styles.description}>{description}</p>
+                </header>
                 <ul className={styles.tasks}>
                     {tasks.map((task, index) => (
                         <li key={index}>{task}</li>
@@ -28,7 +30,7 @@ export const Card = ({ title, description, tasks }) => {
                 <button onClick={openModal} className={styles.expandButton}>
                     Expand
                 </button>
-            </div>
+            </article>
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
@@ -45,6 +47,6 @@ export const Card = ({ title, description, tasks }) => {
                 </ul>
                 <button onClick={closeModal} className={styles.closeButton}>Close</button>
             </Modal>
-        </div>
+        </>
     );
 };
