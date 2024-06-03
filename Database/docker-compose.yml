@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Passw0rd!1"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Passw0rd!1' -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  flyway:
+    image: flyway/flyway
+    depends_on:
+      - mssql
+    environment:
+      FLYWAY_URL: "${LOCAL_FLYWAY_URL}"
+      FLYWAY_USER: "${LOCAL_FLYWAY_USER}"
+      FLYWAY_PASSWORD: "${LOCAL_FLYWAY_PASSWORD}"
+    command: "migrate"
+    volumes:
+      - ./flyway/conf/flyway.conf:/flyway/conf/flyway.conf
+      - ./flyway/migrations:/flyway/sql
+
+volumes:
+  mssql_data:
