@@ -3,11 +3,43 @@ import multer from "multer";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import type { Request, Response, NextFunction } from "express";
-import JsonWebToken from "jsonwebtoken";
+import { S3Client } from "@aws-sdk/client-s3";
+import { KeyStore } from "./config";
+import s3Storage from "multer-s3";
+
 
 type MiddlewareResponse = Response<any, Record<string, any>> | void
 const SessionTokenHeader = "Session-Token";
 const AuthTokenHeader = "Authorization"
+
+class MulterS3 {
+    private BucketName!: string;
+    private Region!: string;
+    constructor() {
+        KeyStore.read("S3_REGION").then((value) => {
+            this.Region = value;
+        })
+        KeyStore.read("S3_BUCKET_NAME").then((value) => {
+            this.BucketName = value;
+        })
+    }
+    
+    public Middleware() {
+        let S3client = new S3Client({ region: this.Region});
+        return multer({
+            limits: { fileSize: 1000000 },
+            storage: s3Storage({
+                s3: S3client,
+                bucket: this.BucketName,
+                acl: "private",
+                key: (_request: Request, _file: Express.Multer.File, callback) => {
+                    callback(null, Date.now().toString());
+                }
+            })
+        })
+    }
+}
+const MulterS3Store = new MulterS3();
 
 
 const Cors = cors({
@@ -23,32 +55,19 @@ const RateLimit = rateLimit({
 })
 
 
-const ValidSession = function (request: Request, response: Response, next: NextFunction): MiddlewareResponse {
-    let sessionToken = request.get(SessionTokenHeader);
-    if (sessionToken === undefined) {
-        return response.status(400).json({ message: "Unauthorized request" });
-    }
-    try {
-        JsonWebToken.verify(sessionToken, "");
-        next();
-    } catch (errror) {
-        response.removeHeader(SessionTokenHeader);
-        return response.status(401).json({ message: "Expired Session" });
-    }
-}
-
-const ValidSessionStart = function (request: Request, response: Response, next: NextFunction): MiddlewareResponse {
-    let authToken = request.get(AuthTokenHeader);
-    if (authToken === undefined) {
-        return response.status(400).json({ message: "Unauthorized request" });
-    }
+// Validates If user session is valid
+const ValidSession = function (_request: Request, _response: Response, next: NextFunction): MiddlewareResponse {
     next();
 }
 
-const Helmet = helmet();
-const Multer = multer({
-    storage: multer.diskStorage({ destination: "/uploads" }),
-    limits: { fileSize: 1000000 } // 1 MB
-})
+// Validates Session Init
+const ValidSessionStart = function (_request: Request, _response: Response, next: NextFunction): MiddlewareResponse {
+    next();
+}
 
-export { Cors, Multer, Helmet, RateLimit, ValidSession, ValidSessionStart, AuthTokenHeader, SessionTokenHeader };
+
+
+const Helmet = helmet();
+const Multer = MulterS3Store.Middleware();
+
+export { Cors,  Helmet, Multer,  RateLimit, ValidSession, ValidSessionStart, AuthTokenHeader, SessionTokenHeader };

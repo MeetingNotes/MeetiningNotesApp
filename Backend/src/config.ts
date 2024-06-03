@@ -58,7 +58,7 @@ class KeyStore extends ReadonlyClientBase<SecretsKeyStore | EnvKeyStore> {
 
     constructor() {
         if (KeyStore.instance === undefined) {
-            if (process.env["NODE_ENV"] === "prod") {
+            if (process.env["NODE_ENV"] === "production") {
                 super(new SecretsKeyStore());
             } else {
                 super(new EnvKeyStore());

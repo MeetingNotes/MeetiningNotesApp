@@ -19,7 +19,7 @@ class Auth extends AppBase {
                 response.setHeader(AuthTokenHeader, token);
                 response.status(200).send();
             }).catch((_error) => {
-                response.status(500)
+                response.status(500).send()
             });
     }
 
