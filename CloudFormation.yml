@@ -1,0 +1,327 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy MeetingNotesApp with Node.js Backend, React Frontend, PostgreSQL RDS, and S3 Bucket
+
+Parameters:
+  VpcCIDR:
+    Type: String
+    Default: '10.0.0.0/16'
+    Description: CIDR block for the VPC
+  KeyName:
+    Description: Name of an existing EC2 keypair to enable SSH access to the instance.
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 keypair.
+  DBMasterUsername:
+    Description: Master username for the RDS instance
+    Type: String
+  DBMasterUserPassword:
+    Description: Master user password for the RDS instance
+    Type: String
+    NoEcho: true
+  GitHubRepository:
+    Description: GitHub repository URL where the Node.js backend and React frontend code reside
+    Type: String
+    Default: 'https://github.com/MeetingNotes/MeetiningNotesApp'
+  AllowedIP:
+    Description: The IP address range that can access RDS and EC2 instances
+    Type: String
+    Default: '0.0.0.0/0'
+    ConstraintDescription: must be a valid CIDR range of the form x.x.x.x/x.
+
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.1.0/24'
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 0
+        - Fn::GetAZs: ''
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.2.0/24'
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 1
+        - Fn::GetAZs: ''
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.3.0/24'
+      AvailabilityZone: !Select
+        - 0
+        - Fn::GetAZs: ''
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.4.0/24'
+      AvailabilityZone: !Select
+        - 1
+        - Fn::GetAZs: ''
+
+  MyDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for RDS
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow traffic to RDS instance
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432  # PostgreSQL default port
+          ToPort: 5432
+          CidrIp: !Ref AllowedIP
+
+  ElasticBeanstalkSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for all ElasticBeanstalk Environments
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref AllowedIP
+
+  MyInternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  MyVPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
+
+  MyRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+
+  MyRoute:
+    Type: AWS::EC2::Route
+    DependsOn: MyVPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref MyRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyInternetGateway
+
+  MySubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref MyRouteTable
+
+  MySubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref MyRouteTable
+
+  MeetingNotesAppInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Description: Beanstalk EC2 role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+
+  MeetingNotesAppInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref MeetingNotesAppInstanceRole
+        
+  MeetingNotesAppAPIApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppAPI
+      Description: MeetingNotesAppAPIApplicationVersion
+      SourceBundle:
+        S3Bucket: !Ref MeetingNotesAppAPIBucket
+        S3Key: nodejs.zip
+
+        
+  MeetingNotesAppFrontendApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppFrontend
+      Description: MeetingNotesAppFrontendApplicationVersion
+      SourceBundle:
+        S3Bucket: !Ref MeetingNotesAppFrontendBucket
+        S3Key: nodejs.zip
+
+  ConfigurationTemplate1:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppAPI
+      Description: Node.js Elastic Beanstalk Application Template
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance 
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref MeetingNotesAppInstanceProfile
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref MyVPC
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Ref PublicSubnet1
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !Ref ElasticBeanstalkSecurityGroup
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: true
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+      
+  ConfigurationTemplate2:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppFrontend
+      Description: Node.js Elastic Beanstalk Application Template
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance 
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref MeetingNotesAppInstanceProfile
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref MyVPC
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Ref PublicSubnet2
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !Ref ElasticBeanstalkSecurityGroup
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: true
+      SolutionStackName: 64bit Amazon Linux 2023 v6.1.5 running Node.js 20
+      
+  MyDBInstance:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    Properties:
+      PubliclyAccessible: true
+      AllocatedStorage: 20
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      EngineVersion: 16.2
+      DBInstanceIdentifier: MeetingNotesAppDB
+      MasterUsername: !Ref DBMasterUsername
+      MasterUserPassword: !Ref DBMasterUserPassword
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref MySecurityGroup
+
+  MeetingNotesAppAPI:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: "Node.js Backend Elastic Beanstalk Application"
+
+  MeetingNotesAppAPIEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppAPI
+      Description: ElasticBeanstalk Environment for Node.js Backend
+      EnvironmentName: !Sub ${AWS::StackName}-api
+      TemplateName: !Ref ConfigurationTemplate1
+      OptionSettings:
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GITHUB_REPO_URL
+          Value: !Ref GitHubRepository
+
+  MeetingNotesAppFrontend:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: "React Frontend Elastic Beanstalk Application"
+
+  MeetingNotesAppFrontendEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref MeetingNotesAppFrontend
+      Description: ElasticBeanstalk Environment for React Frontend
+      EnvironmentName: !Sub ${AWS::StackName}-frontend
+      TemplateName: !Ref ConfigurationTemplate2
+      OptionSettings:
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GITHUB_REPO_URL
+          Value: !Ref GitHubRepository
+
+  MeetingNotesAppS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub meetingnotesapp-${AWS::AccountId}-${AWS::Region}
+      AccessControl: Private
+      
+  MeetingNotesAppAPIBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub meetingnotesapp-api-${AWS::AccountId}-${AWS::Region}
+      AccessControl: Private
+      
+  MeetingNotesAppFrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub meetingnotesapp-frontend-${AWS::AccountId}-${AWS::Region}
+      AccessControl: Private
+      
+Outputs:
+  APIEnvironmentDomain:
+    Description: "Elastic Beanstalk Environment Domain for API"
+    Value: !GetAtt MeetingNotesAppAPIEnvironment.EndpointURL
+  FrontendEnvironmentDomain:
+    Description: "Elastic Beanstalk Environment Domain for Frontend"
+    Value: !GetAtt MeetingNotesAppFrontendEnvironment.EndpointURL
+  RDSInstanceEndpoint:
+    Description: Endpoint of the PostgreSQL RDS instance
+    Value: !GetAtt MyDBInstance.Endpoint.Address
+  S3BucketName:
+    Description: Name of the S3 bucket for user documents
+    Value: !Ref MeetingNotesAppS3Bucket
