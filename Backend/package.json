@@ -1,0 +1,34 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "This is where the BE API source code will be.",
+    "main": "index.ts",
+    "scripts": {
+        "run-api-server": "npx ts-node index.ts"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@aws-sdk/client-cognito-identity": "^3.588.0",
+        "@aws-sdk/client-s3": "^3.588.0",
+        "@aws-sdk/client-secrets-manager": "^3.587.0",
+        "@types/cors": "^2.8.17",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "express-rate-limit": "^7.3.0",
+        "helmet": "^7.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "multer": "^1.4.5-lts.1",
+        "vtt.js": "^0.13.0"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/jsonwebtoken": "^9.0.6",
+        "@types/multer": "^1.4.11",
+        "@types/node": "^20.12.12",
+        "prettier": "^3.2.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.5"
+    }
+}
