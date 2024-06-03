@@ -2,18 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-// import { DashBoard } from './pages/DashBoard';
+import { DashBoard } from './pages/DashBoard';
 import { TitleBar } from './components/TitleBar/TitleBar';
 import { RecoilRoot } from 'recoil';
-import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <RecoilRoot>
-      <App/>
-    {/* <TitleBar/> */}
-    {/* <DashBoard /> */}
+    <TitleBar/>
+    <DashBoard />
     </RecoilRoot>
   </React.StrictMode>
 );
