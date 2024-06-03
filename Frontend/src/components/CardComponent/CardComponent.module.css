@@ -1,0 +1,73 @@
+.card {
+    background-color: #f6f9fa;
+    width: 300px;
+    margin: 5px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.description {
+    font-size: 1em;
+    color: #666;
+}
+
+.tasks {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.expandButton {
+    background-color: #003255;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.closeButton {
+    background-color: #003255;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    
+
+    .modal {
+        width: 90%;
+        max-height: 90vh;
+    }
+}
