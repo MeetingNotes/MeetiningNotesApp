@@ -6,11 +6,14 @@ import type { Request, Response, NextFunction } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { KeyStore } from "./config";
 import s3Storage from "multer-s3";
+import * as parser from "webvtt-parser/parser";
+
 
 
 type MiddlewareResponse = Response<any, Record<string, any>> | void
 const SessionTokenHeader = "Session-Token";
 const AuthTokenHeader = "Authorization"
+const UploadEncoding = "Content-Transfer-Encoding";
 
 class MulterS3 {
     private BucketName!: string;
@@ -27,7 +30,6 @@ class MulterS3 {
     public Middleware() {
         let S3client = new S3Client({ region: this.Region});
         return multer({
-            limits: { fileSize: 1000000 },
             storage: s3Storage({
                 s3: S3client,
                 bucket: this.BucketName,
@@ -39,11 +41,11 @@ class MulterS3 {
         })
     }
 }
-const MulterS3Store = new MulterS3();
+const MulterS3Store = new MulterS3()
 
 
 const Cors = cors({
-    exposedHeaders: ['Content-Type', AuthTokenHeader, SessionTokenHeader],
+    exposedHeaders: ['Content-Type', AuthTokenHeader, SessionTokenHeader, UploadEncoding],
     origin: []
 });
 
@@ -65,9 +67,20 @@ const ValidSessionStart = function (_request: Request, _response: Response, next
     next();
 }
 
-
+const MulterSizeEncoding = multer({
+    limits: { fileSize: 1000000 },
+    fileFilter: (request: Request, file: Express.Multer.File, callback) => {
+        if (file.mimetype === "text/vtt" && request.get("Content-Transfer-Encoding") === "utf-8") {
+            let parsedFile = parser.WebVTTParser().parse(file.buffer);
+            if (parsedFile.errors.length > 0) callback(new Error("Invalid file"));
+            else callback(null, true);
+        } else {
+            callback(new Error("Unsuported file type"))
+        }
+    }
+})
 
 const Helmet = helmet();
-const Multer = MulterS3Store.Middleware();
+const MulterStore = MulterS3Store.Middleware();
 
-export { Cors,  Helmet, Multer,  RateLimit, ValidSession, ValidSessionStart, AuthTokenHeader, SessionTokenHeader };
+export { Cors,  Helmet, MulterStore, MulterSizeEncoding,  RateLimit, ValidSession, ValidSessionStart, AuthTokenHeader, SessionTokenHeader };

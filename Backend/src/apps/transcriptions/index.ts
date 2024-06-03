@@ -1,6 +1,6 @@
 import { AppBase, App, AppRoute } from "../../core/AppBase";
 import type { Response, Request } from "express";
-import { Multer, ValidSession } from "../../middleware";
+import { MulterStore, MulterSizeEncoding, ValidSession } from "../../middleware";
 
 
 @App({ BaseUrl: "/transcriptions", Middlewares: [ValidSession] })
@@ -13,9 +13,9 @@ class Transcriptions extends AppBase {
         response.status(200).send();
     }
 
-    @AppRoute({ Method: "post", Url: "/", Middlewares: [Multer.single("transcript")] })
+    @AppRoute({ Method: "post", Url: "/", Middlewares: [MulterSizeEncoding.single("transcript"),  MulterStore.single("transcript")] })
     public UploadTranscript(_request: Request, response: Response) {
-        // Get File 
+        // Post File
         response.status(200).send();
     }
 }
