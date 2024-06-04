@@ -6,8 +6,6 @@ import type { Request, Response, NextFunction } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { KeyStore } from "./config";
 import s3Storage from "multer-s3";
-import * as parser from "webvtt-parser/parser";
-
 
 
 type MiddlewareResponse = Response<any, Record<string, any>> | void
@@ -15,24 +13,33 @@ const SessionTokenHeader = "Session-Token";
 const AuthTokenHeader = "Authorization"
 const UploadEncoding = "Content-Transfer-Encoding";
 
+
+
+
+let BucketName = "";
+let Region = "";
+{{
+    (async function(){
+        Region = await KeyStore.read("S3_REGION");
+        BucketName = await KeyStore.read("S3_BUCKET_NAME")
+    })()
+}}
+
 class MulterS3 {
-    private BucketName!: string;
-    private Region!: string;
-    constructor() {
-        KeyStore.read("S3_REGION").then((value) => {
-            this.Region = value;
-        })
-        KeyStore.read("S3_BUCKET_NAME").then((value) => {
-            this.BucketName = value;
-        })
+    private region: string
+    private bucket: string
+    constructor () {
+        this.bucket = BucketName
+        this.region = Region
+        console.log(this.region)
     }
-    
-    public Middleware() {
-        let S3client = new S3Client({ region: this.Region});
+
+    public storage() {
+        let S3client = new S3Client();
         return multer({
             storage: s3Storage({
                 s3: S3client,
-                bucket: this.BucketName,
+                bucket: this.bucket,
                 acl: "private",
                 key: (_request: Request, _file: Express.Multer.File, callback) => {
                     callback(null, Date.now().toString());
@@ -41,7 +48,6 @@ class MulterS3 {
         })
     }
 }
-const MulterS3Store = new MulterS3()
 
 
 const Cors = cors({
@@ -67,13 +73,22 @@ const ValidSessionStart = function (_request: Request, _response: Response, next
     next();
 }
 
+// const ValidSubmissionType = function(request: Request, response: Response, next: NextFunction): MiddlewareResponse {
+
+// }
+
+
 const MulterSizeEncoding = multer({
-    limits: { fileSize: 1000000 },
-    fileFilter: (request: Request, file: Express.Multer.File, callback) => {
-        if (file.mimetype === "text/vtt" && request.get("Content-Transfer-Encoding") === "utf-8") {
-            let parsedFile = parser.WebVTTParser().parse(file.buffer);
-            if (parsedFile.errors.length > 0) callback(new Error("Invalid file"));
-            else callback(null, true);
+    limits: { fileSize: 1000000, fields: 50 },
+    storage: multer.diskStorage({
+        destination: __dirname,
+        filename: (_request: Request, _file: Express.Multer.File, callback) => {
+            callback(null, `${Date.now().toString()}.vtt`);
+        }
+    }),
+    fileFilter: (_request: Request, file: Express.Multer.File, callback) => {
+        if (file.mimetype === "text/vtt") {
+            callback(null, true);
         } else {
             callback(new Error("Unsuported file type"))
         }
@@ -81,6 +96,6 @@ const MulterSizeEncoding = multer({
 })
 
 const Helmet = helmet();
-const MulterStore = MulterS3Store.Middleware();
+const MulterStore = new MulterS3().storage()
 
 export { Cors,  Helmet, MulterStore, MulterSizeEncoding,  RateLimit, ValidSession, ValidSessionStart, AuthTokenHeader, SessionTokenHeader };

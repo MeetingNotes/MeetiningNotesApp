@@ -4,7 +4,7 @@
     "description": "This is where the BE API source code will be.",
     "main": "index.ts",
     "scripts": {
-        "run-api-server": "npx ts-node index.ts"
+        "run-api-server": "node -r ./node_modules/ts-node/register ./index.ts"
     },
     "author": "",
     "license": "ISC",
@@ -19,8 +19,7 @@
         "helmet": "^7.1.0",
         "jsonwebtoken": "^9.0.2",
         "multer": "^1.4.5-lts.1",
-        "multer-s3": "^3.0.1",
-        "webvtt-parser": "^2.2.0"
+        "multer-s3": "^3.0.1"
     },
     "devDependencies": {
         "@types/cors": "^2.8.17",

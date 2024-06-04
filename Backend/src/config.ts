@@ -17,7 +17,7 @@ class SecretsKeyStore extends ReadonlyClientBase<SecretsManagerClient> {
         return SecretsKeyStore._instance;
     }
 
-    override async read(key: string): Promise<string> {
+    override async read(key: string): Promise<string>    {
         return new Promise(async (resolve, reject) => {
             if (SecretsKeyStore._keyStoreCache[key]) resolve(SecretsKeyStore._keyStoreCache[key]);
 
@@ -58,7 +58,7 @@ class KeyStore extends ReadonlyClientBase<SecretsKeyStore | EnvKeyStore> {
 
     constructor() {
         if (KeyStore.instance === undefined) {
-            if (process.env["NODE_ENV"] === "production") {
+            if (process.env["NODE_ENV"] === "prod") {
                 super(new SecretsKeyStore());
             } else {
                 super(new EnvKeyStore());

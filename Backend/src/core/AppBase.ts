@@ -1,4 +1,4 @@
-import express, { Express, Router, Request, Response, Application, NextFunction } from "express";
+import express, { Express, Router, type Request, type Response, Application, NextFunction } from "express";
 import { log } from "console";
 
 type AppClassConstructor<BaseClass> = { new(...args: any[]): BaseClass };
@@ -70,6 +70,9 @@ abstract class _ServerSetup {
             This.App?.use(AppMount.BaseUrl as string, AppMount.App as Application)
             mounted_apps = true;
         }
+        This.App?.use((error: any, _request: Request, response: Response, _next: NextFunction) => {
+            response.status(400).send({message: error.message})
+        })
         if (mounted_apps) {
             _ServerSetup.StartServer(This)
         } else {
@@ -78,6 +81,7 @@ abstract class _ServerSetup {
     }
 
     private static StartServer(This: AppServerBase) {
+
         This.App?.listen(443, () => {
             console.log("Server Running on port: 443");
         })
@@ -109,7 +113,7 @@ abstract class _AppSetup {
             for (let idx = 0; idx < AppPrototye["__app_routes"].length; idx++) {
                 let appRoute = singleAppRoutes[idx];
                 if (AllowedMethods.find((method) => { return appRoute.Method == method })) {
-                    if ((appRoute.Middlewares as MiddlewareHandler[]).length > 0) {
+                    if ((Middleware.Setup(appRoute.Middlewares) as MiddlewareHandler[]).length > 0) {
                         (This.App as { [key: string]: any })[appRoute.Method](
                             singleAppRoutes[idx].Url,
                             appRoute.Middlewares)
@@ -117,6 +121,7 @@ abstract class _AppSetup {
                     (This.App as { [key: string]: any })[appRoute.Method](
                         singleAppRoutes[idx].Url,
                         (This as { [key: string]: any })[appRoute.Name])
+                    
                 } else {
                     throw new AppRouterError(singleAppRoutes[idx].Name, singleAppRoutes[idx].Method)
                 }
@@ -128,11 +133,12 @@ abstract class _AppSetup {
 
 function App({ BaseUrl, Middlewares }: AppOptions) {
     return function _app<T extends AppClassConstructor<AppBase>>(Base: T) {
+        console.log(Base.prototype)
         return class extends Base {
             constructor(...args: any[]) {
                 super(args);
                 this.App = express.Router();
-                if ((Middlewares as MiddlewareHandler[]).length > 0) {
+                if ((Middleware.Setup(Middlewares) as MiddlewareHandler[]).length > 0) {
                     this.App?.use(Middleware.Setup(Middlewares));
                 }
                 _AppSetup.SetSingleRoute(this, Base.prototype)
