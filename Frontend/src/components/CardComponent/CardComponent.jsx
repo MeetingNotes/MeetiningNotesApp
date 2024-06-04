@@ -38,8 +38,8 @@ export const Card = ({ title, description, tasks }) => {
                 className={styles.modal}
                 overlayClassName={styles.overlay}
             >
-                <h2>{title}</h2>
-                <p>{description}</p>
+                <h2 className={styles.title}>{title}</h2>
+                <p className={styles.description}>{description}</p>
                 <ul>
                     {tasks.map((task, index) => (
                         <li key={index}>{task}</li>

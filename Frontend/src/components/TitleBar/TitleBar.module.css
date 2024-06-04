@@ -15,6 +15,8 @@
 }
 
 .burgermenu {
+    background: initial;
+    border: none;
     display: block;
     position: absolute;
     right: 0rem;

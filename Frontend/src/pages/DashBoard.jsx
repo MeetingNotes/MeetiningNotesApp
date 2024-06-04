@@ -115,23 +115,7 @@ export const DashBoard = () => {
         }
     ];
     const [currentPage, setCurrentPage] = useState(0);
-    const [cardsPerPage, setCardsPerPage] = useState(isMobile ? 2 : 6);
-    // const cardsPerPage = isMobile ? 2 : 6;
-
-
-    useEffect(() => {
-        if (windowWidth <= 768) {
-            setCardsPerPage(2);
-        } else if (windowWidth <= 1200) {
-            setCardsPerPage(6);
-        } else if (windowWidth >= 2000){
-            setCardsPerPage(12);
-        }
-      }, [windowWidth,cardsPerPage])
-    ;
-    console.log(windowWidth);
-    
-
+    const cardsPerPage = isMobile ? 2 : 6;
     const startIndex = currentPage * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
     const currentCards = cardData.slice(startIndex, endIndex);
