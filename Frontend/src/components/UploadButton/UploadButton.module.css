@@ -1,0 +1,24 @@
+.addbutton {
+    width: 80%;
+    height: 2.813rem;
+    font-size: 1.3em;
+    line-height: 2.813rem;
+    background-color: #E91E63;
+    border: solid #E91E63;
+
+    color: #ffffff;
+    margin: 0 auto;
+    border-radius: 0.625rem;
+    margin-top: 1.25rem;
+    cursor: pointer;
+    transition: 0.5s;
+    outline: none;
+    text-align: center;
+  }
+  
+  .addbutton:hover {
+    /* background-color: #dfe2e2; */
+    border: solid #E91E63;
+    color: black;
+  }
+  

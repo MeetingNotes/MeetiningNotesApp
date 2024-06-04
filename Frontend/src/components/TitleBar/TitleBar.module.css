@@ -1,0 +1,125 @@
+.main {
+    background-color: #003255;
+    height: 16vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.burgermenu {
+    display: block;
+    position: absolute;
+    right: 0rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.text_white {
+    color: white;
+    font-size: 5rem;
+}
+
+.text_pink {
+    color: #E91E63;
+    font-size: 5rem;
+    font-weight: bold;
+}
+
+@media (max-width: 48rem) {
+    .main {
+        height: 10vh;
+        font-size: 3rem;
+    }
+
+    .text_white, .text_pink {
+        font-size: 3rem;
+    }
+}
+
+.side_nav {
+    /* height: 100%; */
+    width: 15.625rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: #111;
+    z-index: 1;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 3.75rem;
+}
+
+.side_nav a {
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    text-decoration: none;
+    font-size: 1.563rem;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.side_nav a:hover {
+    color: #f1f1f1;
+}
+
+.side_nav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 1.563rem;
+    font-size: 2.25rem;
+    margin-left: 3.125rem;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height: 100%; */
+    background: rgba(0,0,0,0.5);
+    z-index: 0;
+    display: none;
+}
+
+.sidenav {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 15.625rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    box-shadow: -0.125rem 0 0.313rem rgba(0,0,0,0.5);
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #003255;
+    font-size: 1.875rem;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column; /* If you want them to be stacked vertically */
+    gap: 0.625rem; /* Adjust the gap value to the desired spacing */
+}
+
+/* Optional: If you want horizontal spacing */
+.buttons.horizontal {
+    flex-direction: row;
+}
