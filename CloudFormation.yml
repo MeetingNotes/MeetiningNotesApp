@@ -67,7 +67,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 1433  # SQL Server default port
           ToPort: 1433
-          CidrIp: !Ref AllowedIP
+          CidrIp: 0.0.0.0/0
 
   ElasticBeanstalkSecurityGroup:
     Type: AWS::EC2::SecurityGroup
