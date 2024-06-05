@@ -78,8 +78,8 @@ Resources:
     Properties:
       DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
+        - !Ref PublicSubnet1
         - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
 
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
