@@ -18,7 +18,8 @@ jobs:
  
       - name: Create Database If Not Exists
         run: |
-          sqlcmd -S ${{ secrets.SQLCMD_URL }} -U ${{ secrets.DB_MASTER_USERNAME }} -P ${{ secrets.DB_MASTER_USER_PASSWORD }} -Q "IF DB_ID('MeetingNotes') IS NULL BEGIN CREATE DATABASE MeetingNotes; END;"
+          echo "Connecting to SQL Server at tcp:${{ secrets.SQLCMD_URL }}"
+          sqlcmd -S tcp:${{ secrets.SQLCMD_URL }} -U ${{ secrets.DB_MASTER_USERNAME }} -P ${{ secrets.DB_MASTER_USER_PASSWORD }} -Q "IF DB_ID('MeetingNotes') IS NULL BEGIN CREATE DATABASE MeetingNotes; END;" || { echo 'sqlcmd failed'; exit 1; }
  
   MigrateDatabase:
     needs: SetupDatabase
