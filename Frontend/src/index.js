@@ -2,17 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { DashBoard } from './pages/DashBoard';
-import { TitleBar } from './components/TitleBar/TitleBar';
 import { RecoilRoot } from 'recoil';
+import awsConfig from './config/aws-exports.js'
+import { Amplify } from 'aws-amplify';
+import App from './App.jsx';
+import { Authenticator } from '@aws-amplify/ui-react';
+console.log('hello', awsConfig)
+Amplify.configure(awsConfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <RecoilRoot>
-    <TitleBar/>
-    <DashBoard />
-    </RecoilRoot>
+<React.StrictMode>
+    <Authenticator.Provider>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+    </Authenticator.Provider>
   </React.StrictMode>
 );
 
