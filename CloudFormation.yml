@@ -35,7 +35,7 @@ Resources:
       EnableDnsHostnames: true
       EnableDnsSupport: true
 
-  PublicSubnet1:
+  PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
@@ -43,26 +43,11 @@ Resources:
       MapPublicIpOnLaunch: true
       AvailabilityZone: 'eu-west-1a'
 
-  PublicSubnet2:
+  PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.2.0/24'
-      MapPublicIpOnLaunch: true
-      AvailabilityZone: 'eu-west-1a'
-
-  PrivateSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: '10.0.3.0/24'
-      AvailabilityZone: 'eu-west-1b'
-
-  PrivateSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: '10.0.4.0/24'
       AvailabilityZone: 'eu-west-1b'
 
   MyDBSubnetGroup:
@@ -70,8 +55,8 @@ Resources:
     Properties:
       DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
-        - !Ref PublicSubnet1
-        - !Ref PrivateSubnet1
+        - !Ref PublicSubnet
+        - !Ref PrivateSubnet
 
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -120,13 +105,7 @@ Resources:
   MySubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet1
-      RouteTableId: !Ref MyRouteTable
-
-  MySubnetRouteTableAssociation2:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnet2
+      SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref MyRouteTable
 
   MeetingNotesAppInstanceRole:
@@ -195,7 +174,7 @@ Resources:
           Value: !Ref MyVPC
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Ref PublicSubnet1
+          Value: !Ref PublicSubnet
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref ElasticBeanstalkSecurityGroup
@@ -227,7 +206,7 @@ Resources:
           Value: !Ref MyVPC
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Ref PublicSubnet2
+          Value: !Ref PublicSubnet
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref ElasticBeanstalkSecurityGroup
