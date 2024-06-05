@@ -39,7 +39,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
-      CidrBlock: '10.0.1.0/24'
+      CidrBlock: '10.0.101.0/24'
       MapPublicIpOnLaunch: true
       AvailabilityZone: 'eu-west-1a'
 
@@ -47,7 +47,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
-      CidrBlock: '10.0.2.0/24'
+      CidrBlock: '10.0.102.0/24'
       AvailabilityZone: 'eu-west-1b'
 
   MyDBSubnetGroup:
