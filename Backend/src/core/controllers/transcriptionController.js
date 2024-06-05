@@ -15,7 +15,6 @@ const uploadTranscription = async (req, res) => {
         const { fileName, fileContent } = req.body;
         const user = req.user;
 
-        // Encrypt the file content and file name
         const encryptedFileName = encrypt(fileName);
         const encryptedFileContent = encrypt(fileContent);
         console.log('ekse: ' +  decrypt(encryptedFileContent) + ' ' + decrypt(encryptedFileName));
