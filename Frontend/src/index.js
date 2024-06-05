@@ -7,7 +7,6 @@ import awsConfig from './config/aws-exports.js'
 import { Amplify } from 'aws-amplify';
 import App from './App.jsx';
 import { Authenticator } from '@aws-amplify/ui-react';
-console.log('hello', awsConfig)
 Amplify.configure(awsConfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
