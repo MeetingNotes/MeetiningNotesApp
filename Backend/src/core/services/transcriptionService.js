@@ -6,17 +6,17 @@ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 const transcribeFile = async (fileContent) => {
   try {
     //Generate Title
-    const titleResult = await model.generateContent(`Give this a short title:\n${fileContent}`);
+    const titleResult = await model.generateContent(`Give this a short two word title. Just write the title and no words before or after:\n${fileContent}`);
     const titleResponse = await titleResult.response;
     const title = titleResponse.text();
 
     // Generate Description
-    const descriptionResult = await model.generateContent(`Summarize this meeting in two sentences:\n${fileContent}`);
+    const descriptionResult = await model.generateContent(`Summarize this meeting in two sentences. Just write the title and no words before or after:\n${fileContent}`);
     const descriptionResponse = await descriptionResult.response;
     const description = descriptionResponse.text();
 
     // Generate Bullet Points
-    const notesResult = await model.generateContent(`List the key points of this meeting in bullet points. Simply start with the first one and continue. NO extra words before or after:\n${fileContent}`);
+    const notesResult = await model.generateContent(`Summarize this meeting. List the key points in bullet points. Simply start with the first one and continue. NO extra words before or after. Separate each point with a \\n:\n${fileContent}`);
     const notesResponse = await notesResult.response;
     const notes = notesResponse.text();
 
