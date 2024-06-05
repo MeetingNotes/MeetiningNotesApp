@@ -3,6 +3,7 @@ const { transcribeFile } = require('../services/transcriptionService');
 const { createUploadedDocument, findUploadedDocumentById, findAllUploadedDocumentsByUserId } = require('../../data/repositories/uploadedDocumentRepository');
 const { findGeneratedDocumentByUploadedId, findAllGeneratedDocumentsByUserId } = require('../../data/repositories/generatedDocumentRepository')
 const { createGeneratedDocument } = require('../../data/repositories/generatedDocumentRepository');
+const { encrypt, decrypt } = require('../utils/cryptoUtils');
 
 //TODO: Move this into a authController instead
 const login = async (req, res) => {
@@ -14,7 +15,12 @@ const uploadTranscription = async (req, res) => {
         const { fileName, fileContent } = req.body;
         const user = req.user;
 
-        const originalS3Response = await uploadToS3(fileName, fileContent);
+        // Encrypt the file content and file name
+        const encryptedFileName = encrypt(fileName);
+        const encryptedFileContent = encrypt(fileContent);
+        console.log('ekse: ' +  decrypt(encryptedFileContent) + ' ' + decrypt(encryptedFileName));
+
+        const originalS3Response = await uploadToS3(encryptedFileName, encryptedFileContent);
 
         const { title, description, notes } = await transcribeFile(fileContent);
 
@@ -86,17 +92,24 @@ const getTranscriptionById = async (req, res) => {
         }
 
         const generatedDoc = await findGeneratedDocumentByUploadedId(transcription.doc_id);
+        if (!generatedDoc) {
+            return res.status(404).json({ message: 'Generated document not found' });
+        }
+
+        // Split the notes into an array of sentences
+        const notesArray = generatedDoc.notes.split('\n').filter(note => note.trim() !== '');
 
         res.status(200).json({
             id: generatedDoc.generated_doc_id,
             timestamp: generatedDoc.created_at,
             title: generatedDoc.title,
             description: generatedDoc.description,
-            notes: generatedDoc.notes
+            notes: notesArray
         });
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 };
+
 
   module.exports = { login, uploadTranscription, getTranscriptions, getTranscriptionById };
