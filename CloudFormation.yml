@@ -137,6 +137,34 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref MyRouteTable
 
+  MeetingNotesAppInstancRateLimitsKeyValueStore:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: MeetingNotesAppInstancRateLimitsKeyValueStore
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 15
+        WriteCapacityUnits: 15
+
+  MeetingNotesAppInstancRateLimitsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: MeetingNotesAppInstancRateLimitsPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource:
+              !GetAtt MeetingNotesAppInstancRateLimitsKeyValueStore.Arn
+
   MeetingNotesAppInstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -154,6 +182,30 @@ Resources:
         - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
         - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
         - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+
+  MeetingNotesAppInstancRateLimitsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Description: Rate Limit Lookup
+      Policies:
+        - PolicyName: !Ref MeetingNotesAppInstancRateLimitsPolicy
+
+
+  MeetingNotesApiAppInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref MeetingNotesAppInstanceRole
+        - !Ref MeetingNotesAppInstancRateLimitsRole
 
   MeetingNotesAppInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -197,7 +249,7 @@ Resources:
           Value: SingleInstance 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: !Ref MeetingNotesAppInstanceProfile
+          Value: !Ref MeetingNotesApiAppInstanceProfile
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
           Value: !Ref MyVPC

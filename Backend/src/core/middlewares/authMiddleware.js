@@ -1,14 +1,24 @@
 const { verifyToken } = require('../utils/cognitoUtils');
 const { findUserBySub, createUser } = require('../../data/repositories/userRepository');
+const { limitFailsByToken, limitFailsByTokenAndIP, limitSlowerIP } = require("./rateMiddleware")
+
+const finduser = async(token) => {
+  try {
+    const decodedToken = await verifyToken(token);
+    return await findUserBySub(decodedToken.sub);
+  } catch(error) {
+    return undefined;
+  }
+}
 
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    console.log('No token provided');
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
   try {
+    if (!token) {
+      console.log('No token provided');
+      await limitSlowerIP.consume(req.ip);
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
     console.log('Token received:', token);
     const decodedToken = await verifyToken(token);
     console.log('Decoded token:', decodedToken);
@@ -21,11 +31,22 @@ const authenticate = async (req, res, next) => {
 
     console.log('User authenticated:', user);
     req.user = user;
+    if (res.locals.tokenIpConsumedPoints > 0) {
+      await limitFailsByTokenAndIP.delete(`${token}_${ip}`)
+    }
     next();
   } catch (error) {
-    console.error('Authentication error:', error);
-    res.status(401).json({ message: 'Unauthorized', error: error.message });
+    if (error instanceof Error) {
+      console.error('Authentication error:', error);
+      await Promise.all([
+        limitFailsByToken.consume(token),
+        limitFailsByTokenAndIP.consume(`${token}_${ip}`)
+      ])
+      res.status(401).json({ message: 'Unauthorized', error: error.message });
+    } else {
+      res.status(429).json({ message: "Too many requests"});
+    }
   }
 };
 
-module.exports = { authenticate };
+module.exports = { authenticate, finduser };
