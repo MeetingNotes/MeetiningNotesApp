@@ -9,7 +9,6 @@ export const UploadButton = () => {
         fileInput.accept = '.vtt';
         fileInput.style.display = 'none';
     
-        // Add an event listener to handle the file selection
         fileInput.addEventListener('change', (event) => {
           const file = event.target.files[0];
           if (file) {

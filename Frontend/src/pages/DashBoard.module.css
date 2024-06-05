@@ -19,7 +19,7 @@
     flex-direction: column;
     width: 100%;
     background-color: #f6f9fa;
-    justify-content: space-between; /* Ensure the pagination is at the bottom */
+    justify-content: space-between;
 }
 
 .cardsContainer {
@@ -32,7 +32,7 @@
 
 @media (max-width: 48rem) {
     .cardsContainer {
-        grid-template-columns: 1fr; /* Stacks the cards on small screens */
+        grid-template-columns: 1fr; 
     }
 }
 
@@ -42,7 +42,7 @@
     justify-content: space-between;
     padding: 0.5rem;
     background-color: #f6f9fa;
-    box-shadow: 0 -0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better separation */
+    box-shadow: 0 -0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
 .pagination button {

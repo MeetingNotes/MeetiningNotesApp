@@ -40,7 +40,7 @@
     bottom: auto;
     transform: translate(-50%, -50%);
     background: #fff;
-    padding: 2rem; /* Increase padding for better spacing */
+    padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
     width: 60%;
@@ -52,7 +52,6 @@
     justify-content: center;
     align-items: center;
     font-size: 1.8em; 
-    /* Increase font size */
 }
 
 
@@ -78,6 +77,5 @@
         width: 70%;
         height: 60%;
         font-size: 1em; 
-        /* max-height: 90vh; */
     }
 }

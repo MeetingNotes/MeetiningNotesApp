@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import styles from './CardComponent.module.css';
 
-Modal.setAppElement('#root'); // Set the app root element for accessibility
+Modal.setAppElement('#root');
 
 export const Card = ({ title, description, tasks }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
