@@ -1,16 +1,13 @@
 import React from "react";
 import styles from './LogOutButton.module.css';
-import { LogOut } from "../../assets";
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 export const LogOutButton = () => {
+  const { signOut } = useAuthenticator();
 
-    const deletetoken = () => {
-        
-      };
-
-    return(
-        <button className={styles.addbutton} onClick={deletetoken}>
-        LogOut 
-        </button>
-    );
+  return (
+    <button className={styles.addbutton} onClick={signOut}>
+      LogOut
+    </button>
+  );
 };

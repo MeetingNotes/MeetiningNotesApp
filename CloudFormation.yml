@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deploy MeetingNotesApp with Node.js Backend, React Frontend, PostgreSQL RDS, and S3 Bucket
+Description: Deploy MeetingNotesApp with Node.js Backend, React Frontend, Microsoft SQL Server Express RDS, and S3 Bucket
 
 Parameters:
   VpcCIDR:
@@ -88,8 +88,8 @@ Resources:
       VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 5432  # PostgreSQL default port
-          ToPort: 5432
+          FromPort: 1433  # SQL Server default port
+          ToPort: 1433
           CidrIp: !Ref AllowedIP
 
   ElasticBeanstalkSecurityGroup:
@@ -301,10 +301,10 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       PubliclyAccessible: true
-      AllocatedStorage: 20
+      AllocatedStorage: 20  # Minimum storage for SQL Server Express
       DBInstanceClass: db.t3.micro
-      Engine: postgres
-      EngineVersion: 16.2
+      Engine: sqlserver-ex
+      EngineVersion: 15.00.4236.7.v1
       DBInstanceIdentifier: MeetingNotesAppDB
       MasterUsername: !Ref DBMasterUsername
       MasterUserPassword: !Ref DBMasterUserPassword
@@ -372,7 +372,7 @@ Outputs:
     Description: "Elastic Beanstalk Environment Domain for Frontend"
     Value: !GetAtt MeetingNotesAppFrontendEnvironment.EndpointURL
   RDSInstanceEndpoint:
-    Description: Endpoint of the PostgreSQL RDS instance
+    Description: Endpoint of the Microsoft SQL Server RDS instance
     Value: !GetAtt MyDBInstance.Endpoint.Address
   S3BucketName:
     Description: Name of the S3 bucket for user documents
