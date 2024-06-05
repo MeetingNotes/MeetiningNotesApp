@@ -2,14 +2,13 @@ import styles from './DashBoard.module.css'
 import { UploadButton } from "../components/UploadButton/UploadButton";
 import { LogOutButton } from "../components/LogOutButton/LogOutButton";
 import { Card } from "../components/CardComponent/CardComponent";
-import { useEffect, useState } from 'react';
-import { useIsMobile, useWindowWidth } from '../recoil';
+import { useState } from 'react';
+import { useIsMobile } from '../recoil';
 import { useRecoilValue } from 'recoil';
 import React from 'react';
 
 export const DashBoard = () => {
     const isMobile = useRecoilValue(useIsMobile);
-    const windowWidth = useRecoilValue(useWindowWidth);
 
 
     const cardData = [
