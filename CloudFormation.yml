@@ -41,9 +41,7 @@ Resources:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.1.0/24'
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 0
-        - Fn::GetAZs: ''
+      AvailabilityZone: 'eu-west-1a'
 
   PublicSubnet2:
     Type: AWS::EC2::Subnet
@@ -51,27 +49,21 @@ Resources:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.2.0/24'
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 1
-        - Fn::GetAZs: ''
+      AvailabilityZone: 'eu-west-1a'
 
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.3.0/24'
-      AvailabilityZone: !Select
-        - 0
-        - Fn::GetAZs: ''
+      AvailabilityZone: 'eu-west-1b'
 
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: '10.0.4.0/24'
-      AvailabilityZone: !Select
-        - 1
-        - Fn::GetAZs: ''
+      AvailabilityZone: 'eu-west-1b'
 
   MyDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
