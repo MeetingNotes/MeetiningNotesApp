@@ -74,7 +74,7 @@ const rateLimiterPreAuth = async(req, resp, next) => {
         retryduration = Number.MAX_SAFE_INTEGER;
     }
 
-    if (retrySecs > 0) {
+    if (retryduration > 0) {
         resp.status(429).send('Too Many Requests');
     } else  {
         resp.locals.tokenIpConsumedPoints = (resTokenAndIP !== null) ? resTokenAndIP.consumedPoints : 0;

@@ -13,6 +13,6 @@ const {
 router.post('/user/login', rateLimiterPreAuth, authenticate, login);
 router.post('/transcription', rateLimiterPreAuth, authenticate, uploadTranscription);
 router.get('/transcriptions', rateLimiterPreAuth, authenticate, getTranscriptions);
-router.get('/transcription/:transcriptionID', authenticate, getTranscriptionById);
+router.get('/transcription/:transcriptionID',  rateLimiterPreAuth, authenticate, getTranscriptionById);
 
 module.exports = router;
