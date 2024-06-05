@@ -1,6 +1,4 @@
 const AWS = require("aws-sdk");
-const { DynamoDB } = AWS.DynamoDB;
-
-const dynamoDBClient = new DynamoDB();
+const dynamoDBClient = new AWS.DynamoDB()
 
 module.exports = {  dynamoDBClient };
