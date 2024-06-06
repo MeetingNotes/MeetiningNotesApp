@@ -7,7 +7,6 @@ const fileUploadMiddleware = (req, res, next) => {
     try {
         let buffer = Buffer.from(fileContent, "base64");
         fileContent = buffer.toString("utf-8").trim();
-        fileContent = querystring.escape(fileContent);
         if ((Buffer.from(fileContent, "utf-8").length * 1024 * 1024) > MAX_SIZE) throw new TypeError("");
         webvtt.parse(fileContent);
         req.body.fileContent = fileContent;
