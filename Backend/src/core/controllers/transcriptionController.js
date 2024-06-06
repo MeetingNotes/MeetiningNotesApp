@@ -3,7 +3,8 @@ const { transcribeFile } = require('../services/transcriptionService');
 const { createUploadedDocument, findUploadedDocumentById, findAllUploadedDocumentsByUserId } = require('../../data/repositories/uploadedDocumentRepository');
 const { findGeneratedDocumentByUploadedId, findAllGeneratedDocumentsByUserId } = require('../../data/repositories/generatedDocumentRepository')
 const { createGeneratedDocument } = require('../../data/repositories/generatedDocumentRepository');
-const { encrypt, decrypt } = require('../utils/cryptoUtils');
+const { encrypt } = require('../utils/cryptoUtils');
+const querystring = require("querystring");
 
 //TODO: Move this into a authController instead
 const login = async (req, res) => {
@@ -17,7 +18,6 @@ const uploadTranscription = async (req, res) => {
 
         const encryptedFileName = encrypt(fileName);
         const encryptedFileContent = encrypt(fileContent);
-        console.log('ekse: ' +  decrypt(encryptedFileContent) + ' ' + decrypt(encryptedFileName));
 
         const originalS3Response = await uploadToS3(encryptedFileName, encryptedFileContent);
 
@@ -111,4 +111,4 @@ const getTranscriptionById = async (req, res) => {
 };
 
 
-  module.exports = { login, uploadTranscription, getTranscriptions, getTranscriptionById };
+module.exports = { login, uploadTranscription, getTranscriptions, getTranscriptionById };
