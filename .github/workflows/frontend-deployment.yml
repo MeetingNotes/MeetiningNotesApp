@@ -1,0 +1,71 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Frontend/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set AWS Credentials
+        run: |
+          echo "Setting AWS credentials"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: Frontend
+        run: npm ci
+
+      - name: Package artifact
+        working-directory: Frontend
+        run: |
+          mkdir -p dist
+          zip -r dist/web.zip *
+          
+      - name: Generate unique version label
+        id: version_label
+        run: echo "VERSION_LABEL=deploy-${{ github.run_id }}-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Beanstalk Deploy for app
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          existing_bucket_name: ${{ secrets.S3_BUCKET_NAME_WEB }}
+          application_name: ${{ secrets.WEB_APP_NAME }}
+          environment_name: ${{ secrets.WEB_APP_ENV_NAME }}
+          region: ${{ secrets.AWS_REGION }}
+          version_label: ${{ env.VERSION_LABEL }}
+          deployment_package: Frontend/dist/web.zip
+          wait_for_environment_recovery: 60
+
+      - name: Set Elastic Beanstalk Environment Variables
+        run: |
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ secrets.WEB_APP_NAME }} \
+            --environment-name ${{ secrets.WEB_APP_ENV_NAME }} \
+            --option-settings "[{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"REACT_APP_API_BASE_URL\",\"Value\":\"${{ secrets.REACT_APP_API_BASE_URL }}\"}]"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
