@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'Database/flyway/migrations'
+  workflow_dispatch:
 
 jobs:
   Deploy:
