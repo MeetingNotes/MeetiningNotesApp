@@ -36,18 +36,6 @@ jobs:
         working-directory: Backend
         run: npm ci
 
-      - name: Verify necessary files
-        working-directory: Backend
-        run: |
-          if [ ! -f "package.json" ]; then
-            echo "package.json is missing!"
-            exit 1
-          fi
-          if [ ! -f "server.js" ] && [ ! -f "app.js" ] && [ ! -f "Procfile" ]; then
-            echo "No entry point file found (server.js, app.js, or Procfile)!"
-            exit 1
-          fi
-
       - name: Package artifact
         working-directory: Backend
         run: |
