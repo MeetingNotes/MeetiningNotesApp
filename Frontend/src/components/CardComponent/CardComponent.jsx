@@ -4,6 +4,7 @@ import styles from './CardComponent.module.css';
 import { fetchTranscriptionById } from '../../services/api';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
+
 export const Card = ({ id, title, timestamp, description }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [detailedData, setDetailedData] = useState(null);

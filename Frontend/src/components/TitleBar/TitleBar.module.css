@@ -15,6 +15,8 @@
 }
 
 .burgermenu {
+    background: initial;
+    border: none;
     display: block;
     position: absolute;
     right: 0rem;
@@ -46,7 +48,6 @@
 }
 
 .side_nav {
-    /* height: 100%; */
     width: 15.625rem;
     position: fixed;
     right: 0;
@@ -84,7 +85,6 @@
     top: 0;
     left: 0;
     width: 100%;
-    /* height: 100%; */
     background: rgba(0,0,0,0.5);
     z-index: 0;
     display: none;
@@ -115,11 +115,10 @@
 
 .buttons {
     display: flex;
-    flex-direction: column; /* If you want them to be stacked vertically */
-    gap: 0.625rem; /* Adjust the gap value to the desired spacing */
+    flex-direction: column;
+    gap: 0.625rem; 
 }
 
-/* Optional: If you want horizontal spacing */
 .buttons.horizontal {
     flex-direction: row;
 }

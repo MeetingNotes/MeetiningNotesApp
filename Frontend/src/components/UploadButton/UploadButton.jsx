@@ -12,7 +12,6 @@ export const UploadButton = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.vtt';
-    fileInput.style.display = 'none';
 
     fileInput.addEventListener('change', async (event) => {
       const file = event.target.files[0];
@@ -20,7 +19,7 @@ export const UploadButton = () => {
         const fileName = file.name;
         const fileExtension = fileName.split('.').pop();
 
-        if (fileExtension === 'vtt') {
+        if (fileExtension === 'vtt' && file.size <= maxSize) {
           try {
             setIsLoading(true);
             setMessage('');
@@ -56,7 +55,6 @@ export const UploadButton = () => {
         }
       }
     });
-
     fileInput.click();
   };
 
