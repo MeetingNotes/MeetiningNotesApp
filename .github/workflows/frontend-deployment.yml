@@ -59,15 +59,13 @@ jobs:
           deployment_package: Frontend/dist/web.zip
           wait_for_environment_recovery: 60
 
-      - name: Update Elastic Beanstalk Environment Variables
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
+      - name: Set Elastic Beanstalk Environment Variables
         run: |
           aws elasticbeanstalk update-environment \
             --application-name ${{ secrets.WEB_APP_NAME }} \
             --environment-name ${{ secrets.WEB_APP_ENV_NAME }} \
-            --region $AWS_REGION \
-            --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=REACT_APP_API_BASE_URL,Value='$REACT_APP_API_BASE_URL'"
+            --option-settings "[{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"REACT_APP_API_BASE_URL\",\"Value\":\"${{ secrets.REACT_APP_API_BASE_URL }}\"}]"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
