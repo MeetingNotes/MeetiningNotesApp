@@ -18,6 +18,7 @@ export const UploadButton = () => {
       if (file) {
         const fileName = file.name;
         const fileExtension = fileName.split('.').pop();
+        const maxSize = 10*1024;
 
         if (fileExtension === 'vtt' && file.size <= maxSize) {
           try {

@@ -1,6 +1,5 @@
 import axios from 'axios'
-const API_URL = 'http://localhost:3500/api';
-
+const API_URL = process.env.REACT_APP_API_BASE_URL;//'http://meetingnotesapp-stack-api.eba-figufmfc.eu-west-1.elasticbeanstalk.com/api';
 export const loginUser = async (token) => {
   try {
     const response = await axios.post(`${API_URL}/user/login`, {}, {
@@ -20,7 +19,7 @@ export const loginUser = async (token) => {
 };
 
 export const fetchTranscriptions = async (token, page, limit) => {
-  const response = await axios.get('http://localhost:3500/api/transcriptions', {
+  const response = await axios.get(`${API_URL}/transcriptions`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -43,7 +42,7 @@ export const fetchTranscriptions = async (token, page, limit) => {
 
 export const uploadTranscription = async (token, payload) => {
   const response = await axios.post(
-    'http://localhost:3500/api/transcription',
+    `${API_URL}/transcription`,
     payload,
     {
       headers: {
@@ -56,7 +55,7 @@ export const uploadTranscription = async (token, payload) => {
 };
 
 export const fetchTranscriptionById = async (token, transcriptionId) => {
-  const response = await axios.get(`http://localhost:3500/api/transcription/${transcriptionId}`, {
+  const response = await axios.get(`${API_URL}/transcription/${transcriptionId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
