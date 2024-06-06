@@ -1,45 +1,28 @@
-name: Flyway Migration
- 
+name: Flyway Deploy
+
 on:
   push:
-    branches: main
+    branches:
+      - main
     paths:
-      - Database/flyway/migrations/**
+      - 'Database/flyway/migrations'
   workflow_dispatch:
- 
+
 jobs:
-  SetupDatabase:
+  Deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Install SQLCMD
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mssql-tools unixodbc-dev
- 
-      - name: Create Database If Not Exists
-        run: |
-          sqlcmd -S tcp:${{ secrets.DB_URL_SQLCMD_FORMAT }} -U ${{ secrets.DB_MASTER_USERNAME }} -P ${{ secrets.DB_MASTER_USER_PASSWORD }} -Q "IF DB_ID('MeetingNotes') IS NULL BEGIN CREATE DATABASE MeetingNotes; END;" || { echo 'sqlcmd failed'; exit 1; }
- 
-  MigrateDatabase:
-    needs: SetupDatabase
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
- 
-      - name: Install Flyway
-        run: |
-          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/9.22.0/flyway-commandline-9.22.0-linux-x64.tar.gz | tar xvz
-          sudo ln -s `pwd`/flyway-9.22.0/flyway /usr/local/bin/flyway
-      - name: Print working directory
-        run: pwd
- 
-      - name: List all directory contents
-        run: ls -R
- 
-      - name: List migrations folder contents
-        run: ls -l Database/flyway/migrations
- 
-      - name: Run Flyway Migrations
-        run: |
-          flyway -user="${{ secrets.DB_MASTER_USERNAME }}" -password="${{ secrets.DB_MASTER_USER_PASSWORD }}" -url="${{ secrets.DB_URL_JDBC_FORMAT }}" -locations="filesystem:Database/flyway/migrations" migrate
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Flyway Validate and Migrate
+        uses: joshuaavalon/flyway-action@v3.0.0
+        with:
+          url: ${{ secrets.DB_URL_JDBC_FORMAT }}
+          user: ${{ secrets.DB_MASTER_USERNAME }}
+          password: ${{ secrets.DB_MASTER_USER_PASSWORD }}
+          locations: filesystem:./Database/flyway/migrations
+        env:
+          FLYWAY_VALIDATE_MIGRATION_NAMING: true

@@ -9,6 +9,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
+
 export const DashBoard = ({ user }) => {
   const [transcriptions, setTranscriptions] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -37,12 +38,6 @@ export const DashBoard = ({ user }) => {
         setCardsPerPage(2);
         setIsMobile(true);
       } else if (windowWidth <= 1200) {
-        setCardsPerPage(6);
-        setIsMobile(false);
-      } else if (windowWidth >= 2000) {
-        setCardsPerPage(12);
-        setIsMobile(false);
-      } else {
         setCardsPerPage(6);
         setIsMobile(false);
       }

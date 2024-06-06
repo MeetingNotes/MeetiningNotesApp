@@ -4,7 +4,7 @@ const awsConfig = {
   "aws_user_pools_id": "eu-west-1_BiM4xuFmI",
   "aws_user_pools_web_client_id": "h8om33rplqurkhsrh9t6ae7m7",
   "oauth": {
-      "domain": "meeting-notes-gen.auth.eu-west-1.amazoncognito.com",
+      "domain": "https://meeting-notes-gen.auth.eu-west-1.amazoncognito.com",
       "scope": [
           "email",
           "openid",
@@ -33,26 +33,5 @@ const awsConfig = {
       "EMAIL"
   ]
 };
-
-/*const awsConfig = {
-  Auth: {
-    region: 'eu-west-1',
-    userPoolId: 'eu-west-1_BiM4xuFmI',
-    userPoolWebClientId: 'h8om33rplqurkhsrh9t6ae7m7',
-    oauth: {
-    domain: 'https://meeting-notes-gen.auth.eu-west-1.amazoncognito.com',
-    scope: ['email', 'openid', 'profile'],
-    redirectSignIn: 'http://localhost:3000/',
-    redirectSignOut: 'http://localhost:3000/',
-    responseType: 'code',
-      },
-  Cognito: {
-    region: 'eu-west-1',
-    userPoolId: 'eu-west-1_BiM4xuFmI',
-    userPoolClientId: 'h8om33rplqurkhsrh9t6ae7m7',
-  }
-},
-  };
-  */
 
   export default awsConfig;
