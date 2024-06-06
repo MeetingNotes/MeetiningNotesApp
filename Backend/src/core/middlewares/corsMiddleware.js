@@ -1,8 +1,6 @@
 const cors = require('cors');
 
-const allowedOrigins = [
-  'http://localhost:3000',
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const corsOptions = {
   origin: (origin, callback) => {
