@@ -19,11 +19,7 @@ const transcribeFile = async (fileContent) => {
     const notesResult = await model.generateContent(`Summarize this meeting. List the key points in bullet points. Simply start with the first one and continue. NO extra words before or after. Separate each point with a \\n:\n${fileContent}`);
     const notesResponse = await notesResult.response;
     const notes = notesResponse.text();
-
-    console.log('Title:', title);
-    console.log('Generated Description:', description);
-    console.log('Generated Notes:', notes);
-
+    
     return { title, description, notes };
   } catch (error) {
     console.error('Error transcribing file:', error);

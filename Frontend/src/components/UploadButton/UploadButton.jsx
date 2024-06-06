@@ -25,12 +25,8 @@ export const UploadButton = () => {
             setIsLoading(true);
             setMessage('');
 
-            // console.log('File selected:', file);
-
             const { base64Content } = await validateAndEncodeVttFile(file);
-            // console.log('File validated and encoded successfully');
 
-            // Prepare the request payload
             const payload = {
               fileContent: base64Content,
               fileName: fileName,
@@ -39,7 +35,6 @@ export const UploadButton = () => {
             const session = await fetchAuthSession();
             const authToken = session.tokens?.accessToken?.toString();
 
-            // Make the POST request
             const response = await uploadTranscription(authToken, payload);
 
             setIsLoading(false);
