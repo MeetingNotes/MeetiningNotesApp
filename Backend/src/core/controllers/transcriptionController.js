@@ -3,7 +3,8 @@ const { transcribeFile } = require('../services/transcriptionService');
 const { createUploadedDocument, findUploadedDocumentById, findAllUploadedDocumentsByUserId } = require('../../data/repositories/uploadedDocumentRepository');
 const { findGeneratedDocumentByUploadedId, findAllGeneratedDocumentsByUserId } = require('../../data/repositories/generatedDocumentRepository')
 const { createGeneratedDocument } = require('../../data/repositories/generatedDocumentRepository');
-const { encrypt, decrypt } = require('../utils/cryptoUtils');
+const { encrypt } = require('../utils/cryptoUtils');
+const querystring = require("querystring");
 
 //TODO: Move this into a authController instead
 const login = async (req, res) => {
@@ -108,4 +109,4 @@ const getTranscriptionById = async (req, res) => {
 };
 
 
-  module.exports = { login, uploadTranscription, getTranscriptions, getTranscriptionById };
+module.exports = { login, uploadTranscription, getTranscriptions, getTranscriptionById };
