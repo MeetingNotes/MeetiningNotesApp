@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middlewares/authMiddleware');
 const { rateLimiterPreAuth } = require("../middlewares/rateMiddleware");
+const { fileUploadMiddleware } = require("../middlewares/fileUploadMiddleware");
 const {
     login,
     uploadTranscription,
@@ -11,7 +12,7 @@ const {
 
 //TODO: move thisd on over to auth route
 router.post('/user/login', rateLimiterPreAuth, authenticate, login);
-router.post('/transcription', rateLimiterPreAuth, authenticate, uploadTranscription);
+router.post('/transcription', rateLimiterPreAuth, authenticate, fileUploadMiddleware, uploadTranscription);
 router.get('/transcriptions', rateLimiterPreAuth, authenticate, getTranscriptions);
 router.get('/transcription/:transcriptionID',  rateLimiterPreAuth, authenticate, getTranscriptionById);
 
