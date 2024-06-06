@@ -22,7 +22,6 @@ const findAllGeneratedDocumentsByUserId = async (user_id, limit, offset) => {
             }
         ],
         limit,
-        offset,
         order: [
             ['created_at', 'DESC']
         ]

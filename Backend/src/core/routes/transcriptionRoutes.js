@@ -8,10 +8,23 @@ const {
     getTranscriptionById
 } = require('../controllers/transcriptionController');
 
-//TODO: move thisd on over to auth route
+const {
+    fileUploadValidator,
+    paginationValidator,
+    transcriptionIdValidator,
+    validate
+} = require('../validators/transcriptionValidators');
+
+
 router.post('/user/login', authenticate, login);
-router.post('/transcription', authenticate, uploadTranscription);
-router.get('/transcriptions', authenticate, getTranscriptions);
-router.get('/transcription/:transcriptionID', authenticate, getTranscriptionById);
+
+
+router.post('/transcription', authenticate, fileUploadValidator, validate, uploadTranscription);
+
+
+router.get('/transcriptions', authenticate, paginationValidator, validate, getTranscriptions);
+
+
+router.get('/transcription/:transcriptionID', authenticate, transcriptionIdValidator, validate, getTranscriptionById);
 
 module.exports = router;
