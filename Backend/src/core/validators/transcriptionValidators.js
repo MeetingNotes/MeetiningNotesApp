@@ -4,12 +4,9 @@ const { parseVTT } = require('../utils/vttParserUtils');
 const fileUploadValidator = [
     body('fileName').notEmpty().withMessage('Filename is required.'),
     body('fileContent').custom((value, { req }) => {
-        console.log('Decoding base64 content...');
         const buffer = Buffer.from(value, 'base64');
         const content = buffer.toString('utf-8').trim();
-        console.log('Decoded content:', content);
 
-        console.log('Validating VTT content...');
         if (!parseVTT(content)) {
             throw new Error('Invalid VTT file content.');
         }

@@ -17,7 +17,6 @@ const uploadTranscription = async (req, res) => {
 
         const encryptedFileName = encrypt(fileName);
         const encryptedFileContent = encrypt(fileContent);
-        console.log('ekse: ' +  decrypt(encryptedFileContent) + ' ' + decrypt(encryptedFileName));
 
         const originalS3Response = await uploadToS3(encryptedFileName, encryptedFileContent);
 
@@ -58,9 +57,7 @@ const getTranscriptions = async (req, res) => {
         const offset = (page - 1) * limit;
         const transcriptions = await findAllGeneratedDocumentsByUserId(user.user_id, limit, offset);
 
-        console.log(`HERE :${transcriptions}`)
         const formattedTranscriptions = transcriptions.map((transcription) => {
-            console.log(JSON.stringify(transcription))
             return {
                 id: transcription.generated_doc_id,
                 title: transcription.title,

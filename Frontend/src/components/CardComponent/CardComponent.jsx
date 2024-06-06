@@ -19,7 +19,6 @@ export const Card = ({ id, title, timestamp, description }) => {
       const authToken = session.tokens?.accessToken?.toString();
 
       const data = await fetchTranscriptionById(authToken, id);
-      // console.log(data);
       setDetailedData(data);
     } catch (error) {
       alert('Error fetching transcription details:');
@@ -56,7 +55,7 @@ export const Card = ({ id, title, timestamp, description }) => {
           <div className={styles.loader}></div>
         ) : (
           detailedData && (
-            <>
+            <div className={styles.main}>
               <h2>{detailedData.title}</h2>
               <p>{new Date(detailedData.timestamp).toLocaleString()}</p>
               <p>{detailedData.description}</p>
@@ -66,7 +65,7 @@ export const Card = ({ id, title, timestamp, description }) => {
                 ))}
               </ul>
               <button onClick={closeModal} className={styles.closeButton}>Close</button>
-            </>
+            </div>
           )
         )}
       </Modal>

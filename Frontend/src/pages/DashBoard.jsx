@@ -21,7 +21,6 @@ export const DashBoard = ({ user }) => {
       try {
         const session = await fetchAuthSession();
         const token = session.tokens?.accessToken?.toString();
-        console.log(token);
         const response = await fetchTranscriptions(token, currentPage + 1, cardsPerPage);
         setTranscriptions(response.data);
       } catch (error) {

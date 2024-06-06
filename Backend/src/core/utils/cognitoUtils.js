@@ -11,7 +11,6 @@ const verifyToken = async (token) => {
   console.log('Verifying token:', token);
   try {
     const payload = await verifier.verify(token);
-    console.log('Token verification successful:', payload);
     return payload;
   } catch (error) {
     console.error('Token verification failed:', error);
