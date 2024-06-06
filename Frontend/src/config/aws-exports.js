@@ -4,7 +4,7 @@ const awsConfig = {
   "aws_user_pools_id": "eu-west-1_BiM4xuFmI",
   "aws_user_pools_web_client_id": "h8om33rplqurkhsrh9t6ae7m7",
   "oauth": {
-      "domain": "cc",
+      "domain": "https://meeting-notes-gen.auth.eu-west-1.amazoncognito.com",
       "scope": [
           "email",
           "openid",
