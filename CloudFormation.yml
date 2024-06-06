@@ -228,6 +228,22 @@ Resources:
       MasterUsername: !Ref DBMasterUsername
       MasterUserPassword: !Ref DBMasterUserPassword
       DBSubnetGroupName: !Ref MyDBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref MySecurityGroup
+
+  MyDBInstanceNew:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    Properties:
+      PubliclyAccessible: true
+      AllocatedStorage: 20  # Minimum storage for SQL Server Express
+      DBInstanceClass: db.t3.micro
+      Engine: sqlserver-ex
+      EngineVersion: 15.00.4236.7.v1
+      DBInstanceIdentifier: MeetingNotesAppDBNew
+      MasterUsername: !Ref DBMasterUsername
+      MasterUserPassword: !Ref DBMasterUserPassword
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
       AvailabilityZone: eu-west-1a
       VPCSecurityGroups:
         - !Ref MySecurityGroup
