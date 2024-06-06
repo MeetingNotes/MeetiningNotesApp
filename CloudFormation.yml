@@ -35,51 +35,28 @@ Resources:
       EnableDnsHostnames: true
       EnableDnsSupport: true
 
-  PublicSubnet1:
+  PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
-      CidrBlock: '10.0.1.0/24'
+      CidrBlock: '10.0.101.0/24'
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 0
-        - Fn::GetAZs: ''
+      AvailabilityZone: 'eu-west-1a'
 
-  PublicSubnet2:
+  PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
-      CidrBlock: '10.0.2.0/24'
-      MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 1
-        - Fn::GetAZs: ''
-
-  PrivateSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: '10.0.3.0/24'
-      AvailabilityZone: !Select
-        - 0
-        - Fn::GetAZs: ''
-
-  PrivateSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: '10.0.4.0/24'
-      AvailabilityZone: !Select
-        - 1
-        - Fn::GetAZs: ''
+      CidrBlock: '10.0.102.0/24'
+      AvailabilityZone: 'eu-west-1b'
 
   MyDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
+        - !Ref PublicSubnet
+        - !Ref PrivateSubnet
 
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -90,7 +67,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 1433  # SQL Server default port
           ToPort: 1433
-          CidrIp: !Ref AllowedIP
+          CidrIp: 0.0.0.0/0
 
   ElasticBeanstalkSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -128,13 +105,7 @@ Resources:
   MySubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet1
-      RouteTableId: !Ref MyRouteTable
-
-  MySubnetRouteTableAssociation2:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnet2
+      SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref MyRouteTable
 
   MeetingNotesAppInstanceRole:
@@ -203,7 +174,7 @@ Resources:
           Value: !Ref MyVPC
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Ref PublicSubnet1
+          Value: !Ref PublicSubnet
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref ElasticBeanstalkSecurityGroup
@@ -235,7 +206,7 @@ Resources:
           Value: !Ref MyVPC
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Ref PublicSubnet2
+          Value: !Ref PublicSubnet
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref ElasticBeanstalkSecurityGroup

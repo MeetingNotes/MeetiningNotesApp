@@ -1,0 +1,63 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Backend/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set AWS Credentials
+        run: |
+          echo "Setting AWS credentials"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: Backend
+        run: npm ci
+
+      - name: Package artifact
+        working-directory: Backend
+        run: |
+          mkdir dist
+          zip -r dist/app.zip *
+
+      - name: Beanstalk Deploy for app
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          existing_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
+          application_name: ${{ secrets.APP_NAME }}
+          environment_name: ${{ secrets.APP_ENV_NAME }}
+          region: ${{ secrets.AWS_REGION }}
+          version_label: ${{ github.run_id }}
+          deployment_package: Backend/dist/app.zip
+          wait_for_environment_recovery: 60
+
+      - name: Set Elastic Beanstalk Environment Variables
+        run: |
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ secrets.APP_NAME }} \
+            --environment-name ${{ secrets.APP_ENV_NAME }} \
+            --option-settings "[{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"AWS_ACCESS_KEY_ID\",\"Value\":\"${{ secrets.AWS_ACCESS_KEY_ID }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"AWS_SECRET_ACCESS_KEY\",\"Value\":\"${{ secrets.AWS_SECRET_ACCESS_KEY }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"AWS_REGION\",\"Value\":\"${{ secrets.AWS_REGION }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"COGNITO_USER_POOL_ID\",\"Value\":\"${{ secrets.COGNITO_USER_POOL_ID }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"COGNITO_CLIENT_ID\",\"Value\":\"${{ secrets.COGNITO_CLIENT_ID }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"S3_BUCKET_NAME\",\"Value\":\"${{ secrets.S3_BUCKET_NAME }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"GOOGLE_API_KEY\",\"Value\":\"${{ secrets.GOOGLE_API_KEY }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"DATABASE_URL\",\"Value\":\"${{ secrets.DATABASE_URL }}\"},{\"Namespace\":\"aws:elasticbeanstalk:application:environment\",\"OptionName\":\"ENCRYPTION_KEY\",\"Value\":\"${{ secrets.ENCRYPTION_KEY }}\"}]"
