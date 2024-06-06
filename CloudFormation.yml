@@ -228,6 +228,7 @@ Resources:
       MasterUsername: !Ref DBMasterUsername
       MasterUserPassword: !Ref DBMasterUserPassword
       DBSubnetGroupName: !Ref MyDBSubnetGroup
+      AvailabilityZone: eu-west-1a
       VPCSecurityGroups:
         - !Ref MySecurityGroup
 
