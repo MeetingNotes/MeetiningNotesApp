@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middlewares/authMiddleware');
+const { fileUploadMiddleware } = require("../middlewares/fileUploadMiddleware");
 const {
     login,
     uploadTranscription,
@@ -10,7 +11,7 @@ const {
 
 //TODO: move thisd on over to auth route
 router.post('/user/login', authenticate, login);
-router.post('/transcription', authenticate, uploadTranscription);
+router.post('/transcription', authenticate, fileUploadMiddleware, uploadTranscription);
 router.get('/transcriptions', authenticate, getTranscriptions);
 router.get('/transcription/:transcriptionID', authenticate, getTranscriptionById);
 
