@@ -19,10 +19,10 @@ export const Card = ({ id, title, timestamp, description }) => {
       const authToken = session.tokens?.accessToken?.toString();
 
       const data = await fetchTranscriptionById(authToken, id);
-      console.log(data);
+      // console.log(data);
       setDetailedData(data);
     } catch (error) {
-      console.error('Error fetching transcription details:', error);
+      alert('Error fetching transcription details:');
     } finally {
       setIsLoading(false);
     }

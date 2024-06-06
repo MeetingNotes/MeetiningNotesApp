@@ -12,7 +12,7 @@ export const TitleBar = () => {
 
     const openNav = () => {
         setIsSideNavOpen(true);
-        console.log("Open");
+        // console.log("Open");
     };
 
     const closeNav = () => {

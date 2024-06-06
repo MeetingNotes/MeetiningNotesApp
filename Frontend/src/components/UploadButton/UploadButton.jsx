@@ -25,10 +25,10 @@ export const UploadButton = () => {
             setIsLoading(true);
             setMessage('');
 
-            console.log('File selected:', file);
+            // console.log('File selected:', file);
 
             const { base64Content } = await validateAndEncodeVttFile(file);
-            console.log('File validated and encoded successfully');
+            // console.log('File validated and encoded successfully');
 
             // Prepare the request payload
             const payload = {
@@ -45,11 +45,11 @@ export const UploadButton = () => {
             setIsLoading(false);
             setMessage('Upload successful!');
             window.location.reload();
-            console.log('Upload successful:', response);
+            alert('Upload successful:');
           } catch (error) {
             setIsLoading(false);
             setMessage('Error uploading file.');
-            console.error('Error processing the file:', error);
+            alert('Error processing the file:');
           }
         } else {
           alert('Please select a VTT file.');
