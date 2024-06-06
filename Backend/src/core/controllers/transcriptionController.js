@@ -4,7 +4,7 @@ const { createUploadedDocument, findUploadedDocumentById, findAllUploadedDocumen
 const { findGeneratedDocumentByUploadedId, findAllGeneratedDocumentsByUserId } = require('../../data/repositories/generatedDocumentRepository')
 const { createGeneratedDocument } = require('../../data/repositories/generatedDocumentRepository');
 const { encrypt } = require('../utils/cryptoUtils');
-const dompurify = require("dompurify");
+const querystring = require("querystring");
 
 //TODO: Move this into a authController instead
 const login = async (req, res) => {
@@ -96,7 +96,7 @@ const getTranscriptionById = async (req, res) => {
         }
 
         // Split the notes into an array of sentences
-        const notesArray = generatedDoc.notes.split('\n').filter(note => note.trim() !== '').map(note => {return dompurify.sanitize(note) });
+        const notesArray = generatedDoc.notes.split('\n').filter(note => note.trim() !== '').map(note => {return querystring.escape(note) });
 
         res.status(200).json({
             id: generatedDoc.generated_doc_id,

@@ -1,14 +1,13 @@
-const dompurify = require("dompurify");
+const querystring = require("querystring");
 const webvtt = require('node-webvtt');
 
 const MAX_SIZE = 500 * 1024 * 1024;
-
 const fileUploadMiddleware = (req, res, next) => {
     let fileContent = req.body.fileContent;
     try {
         let buffer = Buffer.from(fileContent, "base64");
         fileContent = buffer.toString("utf-8").trim();
-        fileContent = dompurify.sanitize(fileContent);
+        fileContent = querystring.escape(fileContent);
         if ((Buffer.from(fileContent, "utf-8").length * 1024 * 1024) > MAX_SIZE) throw new TypeError("");
         webvtt.parse(fileContent);
         req.body.fileContent = fileContent;
