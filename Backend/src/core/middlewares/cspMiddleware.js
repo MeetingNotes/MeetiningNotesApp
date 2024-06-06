@@ -9,8 +9,7 @@ const cspMiddleware = helmet({
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "'self'",],
             "img-src": ["'self'", "data:"],
             "connect-src": [
-                "'self'", 
-                "https://cognito-idp.eu-west-1.amazonaws.com",
+                "'self'",
                 "https://meeting-notes-gen.auth.eu-west-1.amazoncognito.com"
             ],
             "font-src": ["'self'"],
