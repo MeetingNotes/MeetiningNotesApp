@@ -20,7 +20,7 @@ jobs:
       - name: Flyway Validate and Migrate
         uses: joshuaavalon/flyway-action@v3.0.0
         with:
-          url: ${{ secrets.DB_URL_JDBC_FORMAT }}/MeetingNotes
+          url: ${{ secrets.DB_URL_JDBC_FORMAT }}
           user: ${{ secrets.DB_MASTER_USERNAME }}
           password: ${{ secrets.DB_MASTER_USER_PASSWORD }}
           locations: filesystem:./Database/flyway/migrations
