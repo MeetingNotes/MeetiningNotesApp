@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: Frontend
-        run: npm ci
+        run: npm i
 
       - name: Package artifact
         working-directory: Frontend
